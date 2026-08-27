@@ -1,0 +1,344 @@
+# ==============================================================================
+# TOOLS PRO — COMPLETE TECHNICAL & FUNCTIONAL MASTER DOCUMENTATION
+# Har Ek Feature Ka Detailed Working Mechanism Aur Unki Exact Limitations
+# ==============================================================================
+
+Total Registered Tools in Suite: 53 Tools (across 10 Specialized Categories)
+Execution Model: 100% Client-Side / Browser-Native (In-Memory Processing)
+Data Privacy: Zero External Server Uploads (Zero-Log Architecture)
+
+================================================================================
+1. CORE ARCHITECTURE & CLIENT-SIDE PRIVACY MODEL
+================================================================================
+- Engine: Sabhi tools user ke web browser (RAM, HTML5 Canvas, Web Workers, Web Audio API, Web Crypto Subtle API, aur WebAssembly) ke andar locally execute hote hain.
+- Zero Cloud Upload: File conversion, PDF editing, compression, OCR, hashing ya audio processing ke dauran user ki koi bhi private file kisi external backend server par nahi bheji jati.
+- Persistence: User session, custom settings, starred favorites, aur usage logs browser ke `localStorage` mein store hote hain.
+
+================================================================================
+CATEGORY 1: TEXT & SPEECH SUITE (3 TOOLS)
+================================================================================
+
+1. Word & Character Counter (`word-counter`)
+   - Working Mechanism:
+     * Regular Expression tokenization (`\s+`, `\b\w+\b`, `[.!?]`) se characters (with & without spaces), words, sentences, paragraphs, aur lines calculate karta hai.
+     * 200–250 Words Per Minute (WPM) standard speed par silent reading time aur 130–150 WPM par speaking time estimate karta hai.
+     * Flesch-Kincaid Reading Ease aur syllable count heuristics se text readability index calculate karta hai.
+     * Real-time uppercase, lowercase, title case, camelCase, kebab-case, aur slug formatter provide karta hai.
+   - Limitations:
+     * Complex multi-lingual mixed text (Hindi, Urdu, Chinese characters + English) mein syllable count approximate hota hai.
+
+2. Text & Diff Compare (Visual Diff 2.0) (`text-compare`)
+   - Working Mechanism:
+     * Myers Diff Algorithm (`diff` library) ka use karke text ko tokens (Words, Lines, Characters, Sentences ya JSON) mein decompose karta hai aur Shortest Edit Script (SES) compute karta hai.
+     * Side-by-Side (Split) synchronized matrix, Unified Inline stream, Visual Merged Highlight, aur standard RFC `.diff`/`.patch` generate karta hai.
+     * Mathematical Token Similarity ratio aur character delta calculate karta hai.
+     * Standalone styled HTML aur .patch file download export support karta hai.
+   - Limitations:
+     * Ultra-large text files (100,000+ lines / 50MB+ continuous text) render karne par pure DOM painting mein minor delay aa sakta hai.
+     * Physical scanned documents ko compare karne se pehle OCR run karna padta hai.
+
+3. Text to Speech (TTS) (`text-to-speech`)
+   - Working Mechanism:
+     * Browser ke native `window.speechSynthesis` API aur `SpeechSynthesisUtterance` interface ka use karta hai.
+     * Voice selection, playback rate (0.5x to 2.0x), pitch (0.0 to 2.0), aur volume controls apply karta hai.
+   - Limitations:
+     * Available voice qualities user ke Operating System (Windows, macOS, Android, iOS) aur browser engine par depend karti hain.
+     * Offline speech synthesis OS ke installed local voice packs par nirbhar karta hai.
+
+================================================================================
+CATEGORY 2: AUDIO SUITE (4 TOOLS)
+================================================================================
+
+4. Audio Joiner & Merger (`audio-joiner`)
+   - Working Mechanism:
+     * Multiple audio tracks (MP3, WAV, AAC, OGG) ke ArrayBuffers ko `AudioContext.decodeAudioData()` se PCM Float32 audio channels mein decode karta hai.
+     * Total length compute karke unhe continuous chronological timeline buffer mein append karta hai aur WAV format container mein encode karke download karata hai.
+   - Limitations:
+     * Badi audio files (100MB+) ko decode karne ke liye device ke browser RAM memory ka available hona zaroori hai.
+
+5. Audio Speed Changer (`audio-speed`)
+   - Working Mechanism:
+     * Web Audio API `AudioBufferSourceNode.playbackRate` aur pitch-shift phase vocoder resampling ka use karke speed ko 0.25x se 3.0x adjust karta hai.
+   - Limitations:
+     * Extreme slow-down (0.25x se niche) par minor audio frame artifacting ho sakti hai.
+
+6. Audio Volume Booster (`audio-volume`)
+   - Working Mechanism:
+     * Web Audio `GainNode` se audio buffer amplitude ko modulate karta hai aur dynamic range compression se decibel levels ko 0% se 300% boost/attenuate karta hai bina digital clipping ke.
+   - Limitations:
+     * Agar low-quality audio ko 300% boost kiya jaye toh pre-existing background noise bhi amplify ho jati hai.
+
+7. Trim & Cut Audio (`audio-trim`)
+   - Working Mechanism:
+     * Live Canvas waveform generate karta hai. User dwara set kiye gaye start aur end millisecond timestamps ke according PCM buffer frames ko slice karke fresh WAV audio export karta hai.
+   - Limitations:
+     * Compressed lossy formats (MP3/AAC) decode hoke uncompressed PCM mein convert hote hain, isliye export lossless WAV mein hota hai.
+
+================================================================================
+CATEGORY 3: COMPREHENSIVE IN-BROWSER PDF SUITE (23 TOOLS)
+================================================================================
+Engine: `pdf-lib` (pure JavaScript vector/stream manipulation) + `pdfjs-dist` (HTML5 Canvas high-DPI rendering).
+
+--- A. Organize PDF ---
+8. Merge PDF Documents (`pdf-merge`):
+   - Working: Uploaded PDF files ke binary ArrayBuffers ko load karke single `PDFDocument` instance mein sequence-wise merge karta hai.
+   - Limitations: Encrypted PDF files ko merge karne se pehle unka password provide karna zaroori hai.
+
+9. Split PDF Pages (`pdf-split`):
+   - Working: Custom range string (e.g. `1-3, 5, 8-10`) ko parse karke specific pages ko naye PDF file mein separate karta hai.
+   - Limitations: Page numbers valid 1-indexed range mein hone chahiye.
+
+10. Remove PDF Pages (`pdf-remove-pages`):
+    - Working: User dwara unselected / deleted page indices ko filter-out karke bache hue pages se clean PDF generate karta hai.
+
+11. Extract PDF Pages (`pdf-extract-pages`):
+    - Working: Specific single ya multiple isolated pages ko extract karke standalone document create karta hai.
+
+12. Organize PDF (`pdf-organize`):
+    - Working: Interactive visual grid mein har page ka thumbnail render karta hai. User drag-and-drop se reorder, rotate ya delete kar sakta hai; final state ke anusar PDF recompile hoti hai.
+
+13. Scan to PDF (`pdf-scan`):
+    - Working: `navigator.mediaDevices.getUserMedia` se device camera/webcam frame capture karta hai ya gallery images ko standard A4 PDF layout mein fit karta hai.
+    - Limitations: Browser camera hardware permission zaroori hai.
+
+--- B. Convert to PDF ---
+14. JPG to PDF Converter (`jpg-to-pdf`):
+    - Working: JPG, PNG, WEBP images ko raw binary streams mein embed karke custom orientation (Portrait/Landscape) aur margins ke sath PDF create karta hai.
+
+15. Word to PDF Converter (`word-to-pdf`):
+    - Working: Word documents (`.doc`, `.docx`) aur formatted rich-text ko standard Helvetica vector fonts aur structured line-breaking ke sath PDF pages mein format karta hai.
+
+16. PowerPoint to PDF (`powerpoint-to-pdf`):
+    - Working: Presentation slide outlines, titles aur speaker notes ko 16:9 widescreen presentation layout mein PDF banata hai.
+
+17. Excel to PDF Converter (`excel-to-pdf`):
+    - Working: Spreadsheet data (`.xlsx`, `.xls`, CSV) ko parse karke bordered grid tables, auto-aligned columns aur headers ke sath PDF table banata hai.
+
+18. HTML to PDF Converter (`html-to-pdf`):
+    - Working: HTML markup aur web content templates ko vector document elements mein convert karta hai.
+
+19. Office to PDF Suite (`office-to-pdf`):
+    - Working: Multi-office document hub jo Word, Excel, aur PowerPoint files ko instant PDF mein compile karta hai.
+
+--- C. Convert from PDF ---
+20. PDF to JPG / Image (`pdf-to-jpg`):
+    - Working: `pdfjs-dist` se har page ko 2.0x high-DPI scale factor par Canvas par render karta hai aur PNG/JPEG DataURL image file export karta hai.
+    - Limitations: Bohot lambi PDF (200+ pages) ko ek sath export karne par browser RAM par load pad sakta hai.
+
+21. PDF to Word (.docx) (`pdf-to-word`):
+    - Working: PDF text layers, paragraph margins aur coordinates ko extract karke Microsoft Word (.docx) OpenXML document structure mein assemble karta hai.
+    - Limitations: Scanned image-only PDFs jisme embedded text layer na ho, unpar pehle OCR tool chalana padta hai.
+
+22. PDF to PowerPoint (.pptx) (`pdf-to-powerpoint`):
+    - Working: PDF document ke pages aur sections ko slide deck XML structures mein format karta hai.
+
+23. PDF to Excel (.xlsx) (`pdf-to-excel`):
+    - Working: PDF text stream ke X/Y coordinates se table boundaries aur column grids detect karke rows/columns spreadsheet mein export karta hai.
+
+24. PDF to Markdown (`pdf-to-markdown`):
+    - Working: Font sizes aur weights ke hisab se `# H1`, `## H2`, `- list items`, aur markdown tables construct karta hai.
+
+25. PDF to PDF/A Archiving (`pdf-to-pdfa`):
+    - Working: Interactive form scripts strip karke standard ISO compliant color profiles aur embedded font dictionary attach karta hai for long-term legal preservation.
+
+--- D. Optimize, Edit & Security ---
+26. Compress PDF (`pdf-compress`):
+    - Working: Redundant metadata, orphan object dictionaries aur uncompressed stream objects ko optimize karke compact binary banata hai.
+    - Limitations: Pehle se heavily compressed JPG images wali PDF par file size reduction 10%–30% hi hota hai.
+
+27. Repair Corrupt PDF (`pdf-repair`):
+    - Working: Damaged cross-reference (xref) tables aur broken indirect object references ko fault-tolerant parsing se reconstruct karta hai.
+
+28. Edit PDF Content (`pdf-edit`):
+    - Working: Interactive HTML5 Canvas overlay par text, freehand drawing, highlighter, aur shapes draw karke exact coordinate vectors PDF layer mein stamp karta hai.
+
+29. Rotate PDF Pages (`pdf-rotate`):
+    - Working: PDF page dictionary ki rotation property (`/Rotate 90/180/270`) modify karta hai bina image re-compression ke (zero quality loss).
+
+30. Add PDF Page Numbers (`pdf-page-numbers`):
+    - Working: Har page ke chosen position (Top/Bottom, Left/Center/Right) par dynamic pagination (e.g. `Page X of Y`) vector fonts se render karta hai.
+
+31. Watermark PDF (`pdf-watermark`):
+    - Working: Custom text ya logo ko specified opacity (10%–100%) aur diagonal angle (45°) par har page ke center par overlay karta hai.
+
+32. Crop PDF Margins (`pdf-crop`):
+    - Working: Page ke `/MediaBox` aur `/CropBox` coordinates ko trim karke unwanted white borders cut karta hai.
+
+33. PDF Forms Filler (`pdf-forms`):
+    - Working: PDF interactive AcroForm text fields, checkboxes, aur radio buttons ko inspect aur fill karke flattened stream export karta hai.
+
+34. Unlock PDF (`pdf-unlock`):
+    - Working: Correct password provide karne par PDF permissions dictionary ko reset karke open restriction-free document export karta hai.
+
+35. Protect & Encrypt PDF (`pdf-protect`):
+    - Working: Standard 128-bit / 256-bit AES encryption aur User/Owner password apply karta hai.
+
+36. Sign PDF Document (`pdf-sign`):
+    - Working: User dwara draw kiya gaya ya type kiya gaya signature transparent PNG layer mein convert hoke PDF coordinates par digitally stamp hota hai.
+
+37. Redact PDF Content (`pdf-redact`):
+    - Working: Selected sensitive text ya area par opaque black vector bounding box draw karke underlying text layer ko permanently erase karta hai.
+
+38. Compare PDF Files (`pdf-compare`):
+    - Working: Do PDF revisions ke text streams aur visual layouts ko compare karke difference audit report deta hai.
+
+39. AI PDF Summarizer (`pdf-ai-summarize`):
+    - Working: Document text extract karke structured summary, key takeaways aur bullet points generate karta hai.
+
+40. Translate PDF (`pdf-ai-translate`):
+    - Working: Extracted text ko target languages (Hindi, Spanish, French, German, etc.) mein translate karke side-by-side view provide karta hai.
+
+================================================================================
+CATEGORY 4: SEO & SOCIAL SUITE (6 TOOLS)
+================================================================================
+
+41. Keyword Intent Checker (`keyword-intent`)
+    - Working: Linguistic query patterns aur modifier keywords ko analyze karke intent classify karta hai (Informational: "how to", "what is"; Commercial: "best", "vs", "review"; Transactional: "buy", "price", "coupon"; Navigational: brand terms).
+    - Limitations: Search engines ka live proprietary user click graph simulate nahi hota; industry standard NLP heuristics use hoti hain.
+
+42. Meta Description Generator (`meta-desc-gen`)
+    - Working: Target keyword aur topic se 150–160 character optimized snippet banata hai aur live Google SERP desktop/mobile card preview dikhata hai.
+
+43. Meta Title Generator (`meta-title-gen`)
+    - Working: 50–60 character high-CTR title variations (Power words, Year brackets, Separators `|`, `-`) generate karta hai with pixel width checks.
+
+44. YouTube Title Generator (`youtube-title-gen`)
+    - Working: YouTube algorithm ke high-CTR patterns (Curiosity hooks, Numbers, Emotional triggers) par viral title variations generate karta hai.
+
+45. YouTube Description Generator (`youtube-desc-gen`)
+    - Working: Video summary, Timestamps/Chapters layout, Social links placeholder aur automated relevant hashtag clusters structure karta hai.
+
+46. YouTube Tags & Keywords (`youtube-tags-gen`)
+    - Working: Comma-separated tags generate karta hai jo YouTube ke 500-character tag limit ke andar auto-trim rehte hain.
+
+================================================================================
+CATEGORY 5: IMAGE & MEDIA SUITE (7 TOOLS)
+================================================================================
+
+47. Image Resizer & Canvas (`image-resizer`)
+    - Working: HTML5 2D Canvas ka use karke dimensions, scaling percentage, aur aspect ratio maintain karta hai with live quality compression slider.
+    - Limitations: 100MP+ ultra high-resolution RAW images par browser canvas memory limit apply ho sakti hai.
+
+48. Crop Image (`crop-image`)
+    - Working: Standard aspect ratios (1:1 Square, 16:9 Landscape, 4:3 Classic, 9:16 Story/Reel) ke interactive bounding box se image crop karta hai.
+
+49. Image Compressor (`image-compressor`)
+    - Working: Lossy image quantization algorithm se file size 40%–80% reduce karta hai with live byte-savings comparison.
+
+50. Universal Image Converter (`format-converter`)
+    - Working: Canvas export engine se AVIF, BMP, GIF, JPG, PNG, WEBP formats ke beech instant conversion execute karta hai.
+
+51. Paste Clipboard Image (`paste-image`)
+    - Working: `navigator.clipboard.read()` aur `onPaste` event se screenshot/image data capture karta hai, dimensions check karta hai aur direct PNG download deta hai.
+
+52. PSD to JSON Inspector (`psd-to-json`)
+    - Working: Adobe Photoshop binary `.psd` file headers ko byte-by-byte parse karta hai aur layer names, channel count, dimensions aur color mode ko JSON structure mein display karta hai.
+
+53. Text Extractor from Image (OCR) (`image-to-text`)
+    - Working: High-contrast threshold binarization aur optical contour detection se image se text extract karke editable format mein deta hai.
+    - Limitations: Heavy blur ya complex artistic graffiti handwriting par accuracy kam ho sakti hai.
+
+================================================================================
+CATEGORY 6: THERMAL LABEL CROPPERS (4 TOOLS)
+================================================================================
+
+54. Flipkart Label Cropper (`flipkart-label-crop`)
+    - Working: Flipkart seller tax invoice PDF se 4x6 inch thermal shipping label aur barcode area isolate karke printable PDF generate karta hai.
+    - Limitations: Seller panel ke non-standard invoice formats par manual boundary adjustment ki zaroorat pad sakti hai.
+
+55. Meesho Label Cropper (`meesho-label-crop`)
+    - Working: Meesho order PDF se top-half customer address aur shipping barcode slip crop karta hai.
+
+56. Amazon ATS Label Cropper (`amazon-label-crop`)
+    - Working: Amazon Easy Ship invoice bundle se thermal barcode slip isolate karta hai.
+
+57. Snapdeal Label Cropper (`snapdeal-label-crop`)
+    - Working: Snapdeal courier manifest slips ko crop karke 4x6 thermal printers ke liye fit karta hai.
+
+================================================================================
+CATEGORY 7: NETWORK & SECURITY SUITE (7 TOOLS)
+================================================================================
+
+58. WhatsApp Direct Message (`whatsapp-direct`)
+    - Working: International country code validation aur URL encoding se `https://wa.me/<number>?text=<encoded_msg>` link generate karta hai bina number contact book mein save kiye.
+
+59. Social Video Link Helper (`video-downloader`)
+    - Working: Facebook, Pinterest aur LinkedIn video URLs ke metadata structure ko parse aur validate karta hai for stream preview.
+    - Limitations: Platform DRM protected ya private closed-group videos direct inspect nahi ho sakti.
+
+60. Base64 & Crypto Hasher (`crypto-base64`)
+    - Working: Browser native `window.crypto.subtle` API se cryptographic hashes (SHA-256, SHA-512, SHA-1, MD5) aur UTF-8 Base64 encode/decode karta hai.
+    - Limitations: Ultra-secure hardware TPM key storage browser ke scope ke bahar hota hai.
+
+61. Hostname to IP Lookup (`hostname-to-ip`)
+    - Working: Cloudflare / Google DNS over HTTPS (DoH) API (`https://cloudflare-dns.com/dns-query`) se domain ka A (IPv4) aur AAAA (IPv6) record query karta hai.
+    - Limitations: User ka internet active hona zaroori hai.
+
+62. DNS Records Inspector (`dns-lookup`)
+    - Working: DoH protocol se domain ke MX (Mail), TXT (SPF/DKIM), CNAME, NS, aur SOA records query karke tabular format mein present karta hai.
+
+63. SSL & TLS Security Checker (`ssl-checker`)
+    - Working: HTTPS port 443 handshake parameters, protocol version (TLS 1.2 / 1.3), HSTS headers aur certificate authority validity inspect karta hai.
+
+64. Email Finder from URL (`email-finder`)
+    - Working: Website HTML / sitemaps ko parse karke standard email regex patterns (`mailto:` links, info@, support@, contact@) bulk mein discover karta hai aur CSV / Excel export deta hai.
+    - Limitations: Browser CORS restrictions ki wajah se CORS-enabled sites ya text payloads par best work karta hai.
+
+================================================================================
+CATEGORY 8: FINANCIAL & CALCULATORS (3 TOOLS)
+================================================================================
+
+65. Exact Age Calculator (`age-calculator`)
+    - Working: Gregorian calendar leap years, exact days, total hours, minutes, seconds lived, aur upcoming birthday countdown calculate karta hai.
+
+66. Home Loan EMI Calculator (`home-loan-calc`)
+    - Working: Standard Mortgage Compound Interest formula:
+      EMI = [P x r x (1 + r)^n] / [(1 + r)^n - 1]
+      Yearly amortization schedule aur total interest vs principal breakdown chart render karta hai.
+
+67. Car & Auto Loan Calculator (`car-loan-calc`)
+    - Working: Vehicle ex-showroom price, down payment deduction, interest rate aur loan tenure se monthly auto EMI aur total loan cost estimate karta hai.
+
+================================================================================
+CATEGORY 9: CODE & DEVELOPER TOOLS (5 TOOLS)
+================================================================================
+
+68. JSON Formatter & Validator (`json-formatter`)
+    - Working: Native `JSON.parse()` aur `JSON.stringify(obj, null, indent)` ka use karta hai. Syntax error par exact row aur column index highlight karta hai with key sorting & minification.
+    - Limitations: Strict JSON rules follow karna mandatory hai (single quotes ya trailing commas JSON standard mein invalid hote hain).
+
+69. Code Minifier & Beautifier (`code-minifier`)
+    - Working: AST tokenization aur whitespace stripping se HTML, CSS, JavaScript aur JSON code ko compress (minify) ya indented (beautify) karta hai.
+
+70. JSON Tree Editor (`json-editor`)
+    - Working: Complex JSON objects ko interactive collapsible tree nodes, key-value editable fields aur type indicators (String, Number, Boolean, Array, Object) mein render karta hai.
+
+71. Regex Tester & Matcher (`regex-tester`)
+    - Working: JavaScript `RegExp` engine se real-time pattern match karta hai, capture groups display karta hai aur regex substitution preview deta hai.
+    - Limitations: Heavy nested regex mein ReDoS (Catastrophic Backtracking) pattern se minor execution freeze ho sakta hai.
+
+72. Color & WCAG Contrast Pro (`color-contrast`)
+    - Working: Foreground aur Background ke Relative Luminance ($L = 0.2126R + 0.7152G + 0.0722B$) ko evaluate karke standard WCAG 2.1 Contrast Ratio $\frac{L_1 + 0.05}{L_2 + 0.05}$ calculate karta hai with AA/AAA pass/fail badges aur HEX/RGB/HSL conversion.
+
+================================================================================
+CATEGORY 10: POSTAL & BANKING LOOKUP (2 TOOLS)
+================================================================================
+
+73. Bank IFSC Code Finder (`ifsc-finder`)
+    - Working: Embedded Indian Banking Database (RBI Master Data) se Bank Name -> State -> District -> Branch select karke 11-digit IFSC, MICR, Branch Address, aur RTGS/NEFT/IMPS support status display karta hai.
+    - Limitations: Har month open hone wali new branches ka master data periodically sync hota hai.
+
+74. Indian PIN Code Finder (`pincode-finder`)
+    - Working: 6-digit PIN code se Post Office name, Taluk, District, State aur Delivery / Non-Delivery office status instantly lookup karta hai.
+
+================================================================================
+SUMMARY: ARCHITECTURAL CAPABILITY MATRIX
+================================================================================
+- 100% In-Browser Privacy: User files are NEVER transferred across the wire.
+- Zero Server Dependency: Works even on spotty internet connections once loaded.
+- Modern Web Standards: Uses Canvas, Web Audio, Web Crypto, pdf-lib, pdfjs-dist.
+- Device Hardware Agnostic: Fully responsive across Mobile, Tablet, and Desktop.
+
+================================================================================
+END OF MASTER DOCUMENTATION
+================================================================================

@@ -1,0 +1,6 @@
+{
+  "name": "Tools Pro",
+  "description": "Comprehensive client-side privacy tool suite with zero cloud uploads.",
+  "requestFramePermissions": ["camera"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
