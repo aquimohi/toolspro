@@ -58,6 +58,7 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode = 'logi
       }
       setIsLoading(true);
       try {
+        if (!auth) throw new Error('Firebase is not configured. Please check your .env file.');
         await sendPasswordResetEmail(auth, email.trim());
         setSuccessMsg(`Password reset instructions have been sent to ${email}`);
       } catch (err: any) {
@@ -90,6 +91,7 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode = 'logi
       let userProfile: UserProfile;
 
       if (mode === 'signup') {
+        if (!auth) throw new Error('Firebase is not configured. Please check your .env file.');
         userCredential = await createUserWithEmailAndPassword(auth, email.trim(), password);
         const user = userCredential.user;
         
@@ -109,6 +111,7 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode = 'logi
         await setDoc(doc(db, 'users', user.uid), userProfile);
         
       } else {
+        if (!auth) throw new Error('Firebase is not configured. Please check your .env file.');
         userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
         const user = userCredential.user;
         
