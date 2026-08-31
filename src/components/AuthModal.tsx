@@ -270,7 +270,6 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode = 'logi
                       />
                     </div>
                   </div>
-                  <div id="recaptcha-container"></div>
                   <button type="submit" disabled={isLoading} className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm py-3 rounded-xl transition-all shadow-md flex justify-center cursor-pointer">
                     {isLoading ? 'Sending OTP...' : 'Send OTP'}
                   </button>
@@ -349,6 +348,7 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode = 'logi
           )}
 
         </div>
+        <div id="recaptcha-container"></div>
       </div>
     </div>
   );
