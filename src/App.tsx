@@ -78,12 +78,16 @@ import { SubscriptionModal } from './components/SubscriptionModal';
 import { PaymentGatewayModal } from './components/PaymentGatewayModal';
 import { UserProfileMenu } from './components/UserProfileMenu';
 import { UserManualModal } from './components/UserManualModal';
+import { PricingPage } from './components/PricingPage';
 import { AboutUsPage } from './components/AboutUsPage';
 import { ProfilePage } from './components/ProfilePage';
 import { ToolAssistantChatbot } from './components/ToolAssistantChatbot';
 import { logActivity } from './utils/activityLogger';
 import { STANDALONE_TEMPLATES } from './data/standaloneHtml';
 import { SUBSCRIPTION_PLANS } from './data/subscriptionPlans';
+import { auth, db } from './lib/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export const TOOLS: ToolMeta[] = [
   // 1. Text & Speech
@@ -1036,92 +1040,8 @@ export default function App() {
               </nav>
             </div>
 
-            {/* Center: Global Search Bar (Trigger) */}
-            <div className="flex-1 max-w-md mx-2 sm:mx-4 min-w-0">
-              <button
-                onClick={() => setIsSearchOpen(true)}
-                className="w-full flex items-center justify-between px-4 py-1.5 text-xs text-slate-400 bg-slate-50/80 hover:bg-white hover:text-slate-600 border border-slate-200/80 hover:border-purple-300 rounded-full transition-all duration-150 cursor-pointer text-left shadow-2xs group hover:shadow-xs"
-              >
-                <span className="flex items-center gap-2 truncate">
-                  <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-purple-600 transition-colors shrink-0" />
-                  <span className="truncate text-slate-500 font-normal">Search {TOOLS.length}+ tools (pdf, audio, crop, calc)...</span>
-                </span>
-                <kbd className="hidden sm:inline-flex items-center gap-0.5 px-2 py-0.5 text-[10px] font-mono text-slate-400 bg-white border border-slate-200/80 rounded-md shrink-0 shadow-2xs group-hover:text-purple-700 group-hover:border-purple-200">
-                  ⌘K
-                </kbd>
-              </button>
-            </div>
-
             {/* Right: Top Action Controls */}
             <div className="flex items-center gap-2 shrink-0">
-              {/* AI Assistant Chatbot Trigger */}
-              <button
-                onClick={() => setIsChatbotOpen(true)}
-                className="flex items-center gap-1.5 text-xs font-bold px-3 py-1.5 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl shadow-xs hover:shadow-sm transition-all cursor-pointer shrink-0"
-                title="Ask AI Tool Assistant"
-              >
-                <Headphones className="w-3.5 h-3.5" />
-                <span className="hidden md:inline">AI Help</span>
-              </button>
-
-              {/* User Manual Button */}
-              <button
-                onClick={() => setIsUserManualOpen(true)}
-                className="hidden sm:flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 bg-slate-100/80 hover:bg-purple-50 text-slate-700 hover:text-purple-700 rounded-xl border border-slate-200/60 hover:border-purple-200 transition-all cursor-pointer shrink-0"
-                title="Open Comprehensive User Manual & Documentation"
-              >
-                <BookOpen className="w-3.5 h-3.5 text-purple-600" />
-                <span className="hidden lg:inline">Manual</span>
-              </button>
-
-              {/* Export & Code Dropdown */}
-              <div className="relative hidden md:block" ref={exportMenuRef}>
-                <button
-                  type="button"
-                  onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
-                  className="flex items-center gap-1.5 text-xs font-semibold px-2.5 py-1.5 bg-slate-100/80 hover:bg-purple-50 text-slate-700 hover:text-purple-700 rounded-xl border border-slate-200/60 hover:border-purple-200 transition-all cursor-pointer shrink-0"
-                  title="Export & Standalone Code Options"
-                >
-                  <Download className="w-3.5 h-3.5 text-purple-600" />
-                  <span className="hidden lg:inline">Export</span>
-                  <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform duration-150 ${isExportMenuOpen ? 'rotate-180' : ''}`} />
-                </button>
-
-                {isExportMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl border border-purple-100 shadow-2xl p-1.5 z-50 space-y-0.5 animate-in fade-in zoom-in-95 duration-150">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsExportMenuOpen(false);
-                        handleDownloadStandalone();
-                      }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-purple-700 hover:bg-purple-50/60 rounded-xl transition-colors cursor-pointer text-left"
-                    >
-                      <Download className="w-4 h-4 text-purple-600 shrink-0" />
-                      <div>
-                        <div className="font-bold text-slate-800">Download .html</div>
-                        <div className="text-[10px] text-slate-500 font-normal">Offline standalone tool file</div>
-                      </div>
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsExportMenuOpen(false);
-                        setIsCodeModalOpen(true);
-                      }}
-                      className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-semibold text-slate-700 hover:text-purple-700 hover:bg-purple-50/60 rounded-xl transition-colors cursor-pointer text-left"
-                    >
-                      <Code className="w-4 h-4 text-purple-600 shrink-0" />
-                      <div>
-                        <div className="font-bold text-slate-800">Single-File Code</div>
-                        <div className="text-[10px] text-slate-500 font-normal">Inspect standalone source</div>
-                      </div>
-                    </button>
-                  </div>
-                )}
-              </div>
-
               {/* User Profile / Authentication Menu */}
               <UserProfileMenu
                 user={currentUser}
@@ -1165,6 +1085,12 @@ export default function App() {
               favorites={favorites}
               onToggleFavorite={handleToggleFavorite}
               onOpenSearch={() => setIsSearchOpen(true)}
+            />
+          ) : viewMode === 'pricing' ? (
+            /* PRICING PAGE */
+            <PricingPage 
+              currentUser={currentUser}
+              onSelectPlanForCheckout={handleSelectPlanForCheckout}
             />
           ) : viewMode === 'about' ? (
             /* ABOUT US & QUERY FORM VIEW */
@@ -1339,48 +1265,18 @@ export default function App() {
           )}
         </main>
 
-        {/* Clean Minimal Footer */}
-        <footer className="bg-white border-t border-slate-200 mt-auto py-5 px-4 sm:px-6 lg:px-8 xl:px-12 mb-16 md:mb-0">
-          <div className="w-full mx-auto flex flex-wrap items-center justify-between gap-4 text-xs text-slate-500">
+        {/* Global Footer */}
+        <footer className="mt-auto border-t border-slate-200 bg-white py-8 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
-              <span>100% In-Browser Privacy • Zero server storage</span>
+              <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-purple-600 via-indigo-600 to-pink-500 flex items-center justify-center text-white font-black text-sm shadow-xs shrink-0">⚡</div>
+              <span className="font-extrabold text-slate-900 text-lg tracking-tight">Tools Pro</span>
             </div>
-            <div className="flex items-center gap-3 flex-wrap">
-              <button
-                onClick={() => setViewMode('home')}
-                className="hover:text-indigo-600 font-medium cursor-pointer"
-              >
-                Home
-              </button>
-              <span>•</span>
-              <button
-                onClick={() => setViewMode('hub')}
-                className="hover:text-indigo-600 font-medium cursor-pointer"
-              >
-                All Tools ({TOOLS.length})
-              </button>
-              <span>•</span>
-              <button
-                onClick={() => setViewMode('profile')}
-                className="hover:text-indigo-600 font-medium cursor-pointer"
-              >
-                Profile & Logs
-              </button>
-              <span>•</span>
-              <button
-                onClick={() => setViewMode('about')}
-                className="hover:text-indigo-600 font-medium cursor-pointer"
-              >
-                About & Query Form
-              </button>
-              <span>•</span>
-              <button
-                onClick={() => setIsCodeModalOpen(true)}
-                className="hover:text-indigo-600 font-medium cursor-pointer"
-              >
-                Standalone Single-File Code
-              </button>
+            <p className="text-sm text-slate-500 text-center md:text-left max-w-xl">
+              Engineered for extreme privacy and sub-millisecond speed. All processing happens locally in your browser. 0 Bytes uploaded to external servers.
+            </p>
+            <div className="text-xs font-semibold text-slate-400">
+              © {new Date().getFullYear()} Tools Pro. All rights reserved.
             </div>
           </div>
         </footer>

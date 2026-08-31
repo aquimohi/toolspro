@@ -55,7 +55,8 @@ import {
   FileSignature,
   EyeOff,
   Sparkles,
-  Languages
+  Languages,
+  CreditCard
 } from 'lucide-react';
 import { ToolCategory, ToolId, ToolMeta, UserProfile, AppViewMode } from '../types';
 
@@ -217,13 +218,16 @@ export function Sidebar({
         {/* Drawer Header */}
         <div className="h-16 px-4 border-b border-purple-100 flex items-center justify-between bg-purple-50/30">
           <div className="flex items-center gap-2.5 min-w-0">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white font-extrabold text-sm shadow-xs shrink-0">
-              ⚡
-            </div>
-            <div className="min-w-0">
-              <span className="font-extrabold text-slate-900 text-sm tracking-tight truncate block">
-                Tools Pro
-              </span>
+            <img 
+              src="/logo.png" 
+              alt="Tools Pro" 
+              className="h-8 w-auto shrink-0 object-contain" 
+              onError={(e) => {
+                const target = e.target as HTMLElement;
+                target.outerHTML = `<div class="w-8 h-8 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white font-extrabold text-sm shadow-xs shrink-0">⚡</div><span class="font-extrabold text-slate-900 text-sm tracking-tight truncate block ml-2">Tools Pro</span>`;
+              }}
+            />
+            <div className="min-w-0 flex flex-col justify-center">
               <span className="text-[10px] text-purple-700 font-semibold block">
                 {tools.length} In-Browser Tools
               </span>
@@ -239,24 +243,6 @@ export function Sidebar({
           </button>
         </div>
 
-        {/* Quick Search & Filter in Drawer */}
-        <div className="p-3 border-b border-slate-100 bg-white">
-          <button
-            onClick={() => {
-              onCloseMobile();
-              onOpenSearch();
-            }}
-            className="w-full flex items-center justify-between px-3 py-2 text-xs font-semibold text-slate-600 bg-purple-50/40 hover:bg-purple-50 border border-purple-100 rounded-xl transition-all cursor-pointer group shadow-2xs"
-          >
-            <span className="flex items-center gap-2 truncate">
-              <Search className="w-3.5 h-3.5 text-purple-400 group-hover:text-purple-600 shrink-0" />
-              <span className="truncate">Search all {tools.length} utilities...</span>
-            </span>
-            <kbd className="text-[10px] font-mono bg-white text-purple-700 px-1.5 py-0.5 rounded border border-purple-200 shrink-0">
-              ⌘K
-            </kbd>
-          </button>
-        </div>
 
         {/* Primary Navigation Hub */}
         <div className="p-3 space-y-1.5 border-b border-slate-100 bg-white">
@@ -303,6 +289,42 @@ export function Sidebar({
               }`}
             >
               {tools.length}
+            </span>
+          </button>
+
+          {/* About Link */}
+          <button
+            onClick={() => {
+              onSetViewMode('about');
+              onCloseMobile();
+            }}
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              viewMode === 'about'
+                ? 'bg-purple-600 text-white shadow-2xs'
+                : 'text-slate-700 hover:bg-purple-50/60'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <Info className="w-4 h-4" />
+              <span>About Tools Pro</span>
+            </span>
+          </button>
+
+          {/* Pricing Link */}
+          <button
+            onClick={() => {
+              onSetViewMode('pricing');
+              onCloseMobile();
+            }}
+            className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              viewMode === 'pricing'
+                ? 'bg-purple-600 text-white shadow-2xs'
+                : 'text-slate-700 hover:bg-purple-50/60'
+            }`}
+          >
+            <span className="flex items-center gap-2">
+              <CreditCard className="w-4 h-4" />
+              <span>Pricing</span>
             </span>
           </button>
 

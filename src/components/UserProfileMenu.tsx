@@ -20,6 +20,7 @@ interface UserProfileMenuProps {
   onOpenAuth: () => void;
   onOpenSubscription: () => void;
   onOpenProfile?: () => void;
+  onOpenAdminPanel?: () => void;
   onLogout: () => void;
 }
 
@@ -28,6 +29,7 @@ export function UserProfileMenu({
   onOpenAuth,
   onOpenSubscription,
   onOpenProfile,
+  onOpenAdminPanel,
   onLogout
 }: UserProfileMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -55,16 +57,6 @@ export function UserProfileMenu({
         >
           <User className="w-3.5 h-3.5" />
           <span>Sign In</span>
-        </button>
-
-        <button
-          type="button"
-          onClick={onOpenSubscription}
-          className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 rounded-xl shadow-xs transition-all cursor-pointer"
-        >
-          <Sparkles className="w-3.5 h-3.5 fill-white" />
-          <span className="hidden sm:inline">Pricing & Upgrade</span>
-          <span className="sm:hidden">Upgrade</span>
         </button>
       </div>
     );
@@ -173,19 +165,7 @@ export function UserProfileMenu({
               </button>
             )}
 
-            {!isProOrEnterprise && (
-              <button
-                type="button"
-                onClick={() => { setIsOpen(false); onOpenSubscription(); }}
-                className="w-full py-2 px-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl flex items-center justify-between transition-colors cursor-pointer shadow-xs"
-              >
-                <div className="flex items-center gap-2">
-                  <Sparkles className="w-3.5 h-3.5 fill-white" />
-                  <span>Upgrade to Pro</span>
-                </div>
-                <span className="text-[10px] bg-indigo-700 px-1.5 py-0.5 rounded">20% Off</span>
-              </button>
-            )}
+
 
             <button
               type="button"
@@ -196,14 +176,18 @@ export function UserProfileMenu({
               <span>Billing & Invoices ({user.invoices?.length || 0})</span>
             </button>
 
-            <button
-              type="button"
-              onClick={() => { setIsOpen(false); onOpenSubscription(); }}
-              className="w-full py-2 px-3 hover:bg-slate-100 text-slate-700 font-semibold rounded-xl flex items-center gap-2 transition-colors cursor-pointer text-left"
-            >
-              <Crown className="w-3.5 h-3.5 text-slate-400" />
-              <span>Manage Plan Tiers</span>
-            </button>
+
+
+            {user.role === 'admin' && onOpenAdminPanel && (
+              <button
+                type="button"
+                onClick={() => { setIsOpen(false); onOpenAdminPanel(); }}
+                className="w-full py-2 px-3 bg-purple-50 hover:bg-purple-100 text-purple-700 font-bold rounded-xl flex items-center gap-2 transition-colors cursor-pointer text-left border border-purple-100"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-purple-600" />
+                <span>Admin Dashboard</span>
+              </button>
+            )}
 
             <button
               type="button"

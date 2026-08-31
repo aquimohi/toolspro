@@ -11,7 +11,7 @@ export type ToolCategory =
   | 'Code & Data'
   | 'Postal & Bank';
 
-export type AppViewMode = 'home' | 'tool' | 'hub' | 'about' | 'profile';
+export type AppViewMode = 'home' | 'tool' | 'hub' | 'about' | 'pricing' | 'profile' | 'admin';
 
 export interface ActivityLogItem {
   id: string;
@@ -146,6 +146,7 @@ export interface ToolMeta {
   pdfGroup?: PdfSubGroup;
   icon: string;
   badge?: string;
+  tier?: 'basic' | 'advance' | 'premium';
 }
 
 export type SubscriptionTier = 'free' | 'pro' | 'enterprise';
@@ -190,6 +191,7 @@ export interface UserProfile {
   id: string;
   name: string;
   email: string;
+  role?: 'user' | 'admin';
   avatarUrl?: string;
   tier: SubscriptionTier;
   billingCycle?: BillingCycle;

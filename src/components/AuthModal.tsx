@@ -14,6 +14,13 @@ import {
   EyeOff
 } from 'lucide-react';
 import { UserProfile, SubscriptionTier } from '../types';
+import { auth, db } from '../lib/firebase';
+import { 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword, 
+  sendPasswordResetEmail 
+} from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -39,7 +46,7 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode = 'logi
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
@@ -50,10 +57,14 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode = 'logi
         return;
       }
       setIsLoading(true);
-      setTimeout(() => {
-        setIsLoading(false);
+      try {
+        await sendPasswordResetEmail(auth, email.trim());
         setSuccessMsg(`Password reset instructions have been sent to ${email}`);
-      }, 800);
+      } catch (err: any) {
+        setErrorMsg(err.message || 'Failed to send reset email.');
+      } finally {
+        setIsLoading(false);
+      }
       return;
     }
 
@@ -74,23 +85,65 @@ export function AuthModal({ isOpen, onClose, onLoginSuccess, initialMode = 'logi
 
     setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false);
-      const userProfile: UserProfile = {
-        id: `usr_${Date.now()}`,
-        name: mode === 'signup' ? name.trim() : email.split('@')[0],
-        email: email.trim(),
-        avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
-        tier: 'free',
-        dailyOperationsCount: 4,
-        dailyOperationsLimit: 30,
-        memberSince: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
-        invoices: []
-      };
+    try {
+      let userCredential;
+      let userProfile: UserProfile;
+
+      if (mode === 'signup') {
+        userCredential = await createUserWithEmailAndPassword(auth, email.trim(), password);
+        const user = userCredential.user;
+        
+        userProfile = {
+          id: user.uid,
+          name: name.trim(),
+          email: user.email || email.trim(),
+          avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
+          tier: 'free',
+          dailyOperationsCount: 0,
+          dailyOperationsLimit: 30,
+          memberSince: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+          invoices: []
+        };
+
+        // Save to Firestore
+        await setDoc(doc(db, 'users', user.uid), userProfile);
+        
+      } else {
+        userCredential = await signInWithEmailAndPassword(auth, email.trim(), password);
+        const user = userCredential.user;
+        
+        // Fetch from Firestore
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) {
+          userProfile = userDoc.data() as UserProfile;
+        } else {
+          // Fallback if document doesn't exist
+          userProfile = {
+            id: user.uid,
+            name: email.split('@')[0],
+            email: user.email || email.trim(),
+            avatarUrl: `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(email)}`,
+            tier: 'free',
+            dailyOperationsCount: 0,
+            dailyOperationsLimit: 30,
+            memberSince: new Date().toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+            invoices: []
+          };
+          await setDoc(doc(db, 'users', user.uid), userProfile);
+        }
+      }
 
       onLoginSuccess(userProfile);
       onClose();
-    }, 700);
+    } catch (err: any) {
+      // Clean up Firebase error messages
+      let msg = err.message;
+      if (err.code === 'auth/email-already-in-use') msg = 'Email is already registered.';
+      if (err.code === 'auth/invalid-credential' || err.code === 'auth/wrong-password') msg = 'Invalid email or password.';
+      setErrorMsg(msg || 'Authentication failed.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleQuickDemoLogin = (tier: SubscriptionTier) => {

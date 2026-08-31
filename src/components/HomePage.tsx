@@ -113,11 +113,11 @@ export function HomePage({
   const featuredSuites = [
     {
       id: 'text-compare-suite',
-      title: 'Text & Document Compare Suite',
+      title: 'Text & Word Tools',
       category: 'Text & Speech',
       icon: GitCompare,
-      badge: 'Visual Diff 2.0',
-      desc: 'Side-by-side & unified text diff checker, character/word level metrics, code refactor comparator, and patch generator.',
+      badge: 'Popular',
+      desc: 'Easily compare text, count words, and convert text to speech.',
       tools: [
         { id: 'text-compare' as ToolId, name: 'Text & Diff Compare' },
         { id: 'word-counter' as ToolId, name: 'Word Counter' },
@@ -134,11 +134,11 @@ export function HomePage({
     },
     {
       id: 'pdf-suite',
-      title: 'PDF Engineering Suite',
+      title: 'PDF Tools',
       category: 'PDF Tools',
       icon: FileText,
-      badge: 'Zero-Upload',
-      desc: 'Merge, split, compress, watermark, protect, and reorganize PDF documents 100% in client memory.',
+      badge: 'Most Used',
+      desc: 'Merge, split, protect, and edit your PDF files quickly and securely.',
       tools: [
         { id: 'pdf-merge' as ToolId, name: 'PDF Merger' },
         { id: 'pdf-split' as ToolId, name: 'PDF Splitter' },
@@ -156,11 +156,11 @@ export function HomePage({
     },
     {
       id: 'audio-suite',
-      title: 'Audio Editing Studio',
+      title: 'Audio Tools',
       category: 'Audio',
       icon: Volume2,
-      badge: 'WebAudio API',
-      desc: 'Join audio tracks, slice waveforms, adjust tempo speed, boost volume and synthesize text-to-speech.',
+      badge: 'Fast',
+      desc: 'Join, cut, and change the speed of your audio files.',
       tools: [
         { id: 'audio-joiner' as ToolId, name: 'Audio Joiner' },
         { id: 'audio-trim' as ToolId, name: 'Trim & Cut' },
@@ -178,11 +178,11 @@ export function HomePage({
     },
     {
       id: 'label-suite',
-      title: 'E-Commerce Thermal Label Cropper',
+      title: 'Shipping Label Cropper',
       category: 'Label Cropper',
       icon: ShoppingBag,
-      badge: '4x6 Thermal Ready',
-      desc: 'Crop Amazon, Flipkart, Meesho, and Snapdeal courier invoices into pristine 4x6 thermal printer labels.',
+      badge: 'For Sellers',
+      desc: 'Crop Amazon, Flipkart, and Meesho shipping labels for easy printing.',
       tools: [
         { id: 'amazon-label-crop' as ToolId, name: 'Amazon Cropper' },
         { id: 'flipkart-label-crop' as ToolId, name: 'Flipkart Cropper' },
@@ -200,11 +200,11 @@ export function HomePage({
     },
     {
       id: 'ocr-suite',
-      title: 'Vision OCR & Image Tools',
+      title: 'Image & Photo Tools',
       category: 'Image & Media',
       icon: ImageIcon,
-      badge: 'Client OCR',
-      desc: 'Extract text from scanned images via WebAssembly OCR, resize images, compress photos, and check contrast.',
+      badge: 'Extract Text',
+      desc: 'Extract text from images, resize photos, and crop them easily.',
       tools: [
         { id: 'image-to-text' as ToolId, name: 'Image OCR Extractor' },
         { id: 'image-resizer' as ToolId, name: 'Image Resizer' },
@@ -222,11 +222,11 @@ export function HomePage({
     },
     {
       id: 'dev-suite',
-      title: 'Developer & Security Suite',
+      title: 'Developer Tools',
       category: 'Code & Data',
       icon: Binary,
-      badge: 'WASM Cryptography',
-      desc: 'Validate JSON schemas, test regular expressions, generate SHA/HMAC hashes, and minify code.',
+      badge: 'Secure',
+      desc: 'Format JSON, test code, and generate secure passwords.',
       tools: [
         { id: 'json-formatter' as ToolId, name: 'JSON Formatter' },
         { id: 'regex-tester' as ToolId, name: 'Regex Playground' },
@@ -315,31 +315,26 @@ export function HomePage({
   return (
     <div className="space-y-16 animate-in fade-in duration-300 pb-20">
       
-      {/* 1. HERO SECTION (Pastel Multi-Color Glowing Canvas) */}
-      <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-violet-50/90 via-rose-50/40 via-amber-50/30 to-sky-50/90 text-slate-900 p-8 sm:p-12 lg:p-14 border border-purple-200/70 shadow-sm">
-        {/* Ambient Decorative Pastel Glows */}
-        <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-200/40 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-10 -left-10 w-80 h-80 bg-rose-200/30 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-1/2 right-10 w-72 h-72 bg-sky-200/30 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 max-w-4xl space-y-8">
+      {/* 1. HERO SECTION (Flat) */}
+      <section className="relative text-slate-900 p-8 sm:p-12 lg:p-14">
+        <div className="relative z-10 max-w-4xl mx-auto space-y-8 flex flex-col items-center text-center">
           
           {/* Top Pill / Badge */}
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/90 text-purple-800 border border-purple-200/80 rounded-full text-xs font-bold tracking-wide uppercase shadow-2xs">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 bg-white/90 text-purple-800 border border-purple-200/80 rounded-full text-[10px] sm:text-xs font-bold tracking-wide uppercase shadow-2xs">
             <Sparkles className="w-3.5 h-3.5 text-purple-600" />
-            <span>100% In-Browser Privacy • Zero Cloud Uploads</span>
+            <span>Fast • Free • Secure</span>
           </div>
 
           {/* Main Headline */}
-          <div className="space-y-4">
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-[1.15]">
-              Every Utility You Need. <br />
+          <div className="space-y-3 sm:space-y-4 flex flex-col items-center">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-slate-900 leading-[1.15]">
+              All The Tools You Need. <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-pink-600 to-amber-600">
-                Zero Cloud Uploads.
+                In One Place.
               </span>
             </h1>
-            <p className="text-slate-600 text-base sm:text-xl font-normal leading-relaxed max-w-2xl">
-              A comprehensive suite of 60+ high-performance tools for PDF manipulation, audio editing, vision OCR, thermal label cropping, code formatting, and cryptographic hashing — running entirely inside your browser sandbox.
+            <p className="text-slate-600 text-sm sm:text-lg font-normal leading-relaxed max-w-2xl text-center">
+              We have 70+ easy-to-use tools. Edit PDFs, crop photos, format text, and change audio speed — all for free, right here in your browser without downloading anything!
             </p>
           </div>
 
@@ -367,133 +362,34 @@ export function HomePage({
             </div>
           </div>
 
-          {/* Action CTAs */}
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <button
-              type="button"
-              onClick={() => scrollToSection('featured-tools')}
-              className="px-5 py-2.5 bg-purple-600 hover:bg-purple-700 text-white font-bold rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-xs"
-            >
-              <Layers className="w-4 h-4 text-purple-200" />
-              <span>Explore Featured Suites</span>
-            </button>
 
-            <button
-              type="button"
-              onClick={() => scrollToSection('about-section')}
-              className="px-5 py-2.5 bg-white hover:bg-rose-50/80 text-slate-800 border border-rose-200/80 font-bold rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-2xs"
-            >
-              <ShieldCheck className="w-4 h-4 text-rose-600" />
-              <span>About & Architecture</span>
-            </button>
 
-            <button
-              type="button"
-              onClick={onOpenChatbot}
-              className="px-5 py-2.5 bg-emerald-50 hover:bg-emerald-100/90 text-emerald-800 border border-emerald-200 font-bold rounded-xl text-xs sm:text-sm flex items-center gap-2 transition-all cursor-pointer shadow-2xs"
-            >
-              <Headphones className="w-4 h-4 text-emerald-600" />
-              <span>Ask AI Tool Bot</span>
-            </button>
-          </div>
-
-          {/* Quick Pastel Stats Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-4">
+          {/* Quick Pastel Stats Grid (Hidden on Mobile to save space) */}
+          <div className="hidden sm:grid grid-cols-2 sm:grid-cols-4 gap-3.5 pt-4">
             <div className="bg-purple-100/60 border border-purple-200/80 p-3.5 rounded-2xl">
-              <div className="text-2xl sm:text-3xl font-black text-purple-900">60+</div>
-              <div className="text-xs text-purple-700 font-bold">Production Tools</div>
+              <div className="text-2xl sm:text-3xl font-black text-purple-900">70+</div>
+              <div className="text-xs text-purple-700 font-bold">Free Tools</div>
             </div>
             <div className="bg-emerald-100/60 border border-emerald-200/80 p-3.5 rounded-2xl">
               <div className="text-2xl sm:text-3xl font-black text-emerald-900">100%</div>
-              <div className="text-xs text-emerald-700 font-bold">Client Privacy</div>
+              <div className="text-xs text-emerald-700 font-bold">Safe</div>
             </div>
             <div className="bg-sky-100/60 border border-sky-200/80 p-3.5 rounded-2xl">
-              <div className="text-2xl sm:text-3xl font-black text-sky-900">0 ms</div>
-              <div className="text-xs text-sky-700 font-bold">Server Latency</div>
+              <div className="text-2xl sm:text-3xl font-black text-sky-900">⚡</div>
+              <div className="text-xs text-sky-700 font-bold">Super Fast</div>
             </div>
             <div className="bg-amber-100/60 border border-amber-200/80 p-3.5 rounded-2xl">
-              <div className="text-2xl sm:text-3xl font-black text-amber-900">Offline</div>
-              <div className="text-xs text-amber-700 font-bold">Air-Gapped Capable</div>
+              <div className="text-2xl sm:text-3xl font-black text-amber-900">✓</div>
+              <div className="text-xs text-amber-700 font-bold">Works Offline</div>
             </div>
           </div>
 
         </div>
       </section>
 
-      {/* 2. FEATURED UTILITY SUITES BENTO SECTION (Multi-Pastel Theme) */}
-      <section id="featured-tools" className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
-          <div className="space-y-1">
-            <span className="text-xs font-extrabold uppercase text-purple-700 tracking-wider">High-Impact Workflows</span>
-            <h2 className="text-2xl sm:text-3xl font-black text-slate-900">Featured Utility Suites</h2>
-            <p className="text-sm text-slate-600 max-w-xl">
-              Curated toolkits built for common document processing, multimedia editing, e-commerce dispatch, and developer tasks.
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={onOpenHub}
-            className="text-xs font-bold text-purple-700 hover:text-purple-900 flex items-center gap-1.5 cursor-pointer bg-purple-50 px-3.5 py-1.5 rounded-xl border border-purple-200"
-          >
-            <span>View All {tools.length} Tools</span>
-            <ChevronRight className="w-4 h-4" />
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featuredSuites.map((suite) => {
-            const Icon = suite.icon;
-            return (
-              <div
-                key={suite.id}
-                className={`rounded-3xl border p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between space-y-6 group ${suite.theme.cardBg} ${suite.theme.border}`}
-              >
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border border-white/80 group-hover:scale-105 transition-transform shadow-2xs ${suite.theme.iconBg}`}>
-                      <Icon className="w-6 h-6" />
-                    </div>
-                    <span className={`text-[11px] font-extrabold uppercase tracking-wide px-2.5 py-0.5 rounded-full border ${suite.theme.badge}`}>
-                      {suite.badge}
-                    </span>
-                  </div>
-
-                  <div className="space-y-1">
-                    <h3 className={`text-lg font-bold transition-colors ${suite.theme.headerText}`}>
-                      {suite.title}
-                    </h3>
-                    <p className="text-xs text-slate-600 leading-relaxed">
-                      {suite.desc}
-                    </p>
-                  </div>
-                </div>
-
-                {/* Sub-tools Links */}
-                <div className="space-y-2 pt-2 border-t border-black/5">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Included Utilities</span>
-                  <div className="grid grid-cols-2 gap-1.5">
-                    {suite.tools.map((st) => (
-                      <button
-                        key={st.id}
-                        type="button"
-                        onClick={() => onSelectTool(st.id)}
-                        className={`text-left px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center justify-between transition-colors cursor-pointer border shadow-2xs ${suite.theme.button}`}
-                      >
-                        <span className="truncate">{st.name}</span>
-                        <ArrowUpRight className="w-3 h-3 text-slate-400 group-hover:text-purple-600 shrink-0" />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-              </div>
-            );
-          })}
-        </div>
-      </section>
 
       {/* 3. QUICK SEARCH & CATALOG BROWSER (Pastel Multi-Color Tabs & Cards) */}
-      <section className="bg-white/90 backdrop-blur-xs rounded-3xl border border-purple-100 shadow-sm p-6 sm:p-8 space-y-6">
+      <section className="space-y-6 pt-8 border-t border-slate-200/50">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h2 className="text-xl font-bold text-slate-900">Explore Complete Tool Catalog</h2>
@@ -535,19 +431,17 @@ export function HomePage({
             return (
               <div
                 key={tool.id}
-                className="p-3.5 rounded-2xl bg-white hover:bg-purple-50/30 border border-slate-200/80 hover:border-purple-200 transition-all flex flex-col justify-between space-y-3 group shadow-2xs hover:shadow-xs"
+                className="p-3 rounded-2xl hover:bg-slate-100 transition-all flex flex-col justify-between space-y-2 group cursor-pointer"
+                onClick={() => onSelectTool(tool.id)}
               >
-                <div className="flex items-start justify-between gap-2">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-purple-50 flex items-center justify-center text-purple-600 shrink-0 group-hover:scale-110 transition-transform">
+                    {/* Simplified Icon */}
+                    <div className="w-4 h-4" />
+                  </div>
                   <div className="space-y-0.5 min-w-0">
-                    <button
-                      type="button"
-                      onClick={() => onSelectTool(tool.id)}
-                      className="font-bold text-xs text-slate-900 group-hover:text-purple-700 truncate block text-left cursor-pointer transition-colors"
-                    >
+                    <span className="font-bold text-xs text-slate-900 group-hover:text-purple-700 truncate block text-left transition-colors">
                       {tool.name}
-                    </button>
-                    <span className="text-[10px] font-semibold text-slate-400 block">
-                      {tool.category}
                     </span>
                   </div>
 
@@ -561,183 +455,14 @@ export function HomePage({
                   </button>
                 </div>
 
-                <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed">
+                <p className="text-[11px] text-slate-500 line-clamp-2 leading-relaxed ml-11">
                   {tool.shortDesc}
                 </p>
-
-                <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-md border border-purple-100">
-                    In-Browser
-                  </span>
-                  <button
-                    type="button"
-                    onClick={() => onSelectTool(tool.id)}
-                    className="text-[11px] font-bold text-purple-700 hover:text-purple-900 flex items-center gap-0.5 cursor-pointer"
-                  >
-                    <span>Launch</span>
-                    <ArrowRight className="w-3 h-3" />
-                  </button>
-                </div>
               </div>
             );
           })}
         </div>
 
-        {filteredTools.length > 16 && (
-          <div className="text-center pt-4">
-            <button
-              type="button"
-              onClick={onOpenHub}
-              className="px-6 py-2.5 bg-purple-50 hover:bg-purple-100 text-purple-800 font-bold rounded-xl text-xs inline-flex items-center gap-2 cursor-pointer transition-colors border border-purple-200"
-            >
-              <span>View All {tools.length} Utilities</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        )}
-      </section>
-
-      {/* 4. DEDICATED ABOUT SECTION */}
-      <section id="about-section" className="space-y-12 pt-8">
-        
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-purple-50 text-purple-700 border border-purple-200 rounded-full text-xs font-bold uppercase tracking-wider">
-            <ShieldCheck className="w-3.5 h-3.5 text-purple-600" />
-            <span>About Web Utility Suite</span>
-          </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-slate-900">
-            Engineered for Extreme Privacy & Sub-Millisecond Speed
-          </h2>
-          <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
-            We built Web Utility Suite to solve a fundamental security flaw with modern web tools: the requirement to upload sensitive data to third-party cloud servers.
-          </p>
-        </div>
-
-        {/* Architecture Comparison Table / Matrix */}
-        <div className="bg-white rounded-3xl border border-purple-100 shadow-sm overflow-hidden">
-          <div className="p-6 sm:p-8 bg-gradient-to-r from-purple-950 via-indigo-950 to-slate-900 text-white space-y-2">
-            <h3 className="text-xl font-bold flex items-center gap-2">
-              <Cpu className="w-5 h-5 text-purple-400" />
-              <span>Architectural Breakdown: Traditional Cloud vs. Web Utility Suite</span>
-            </h3>
-            <p className="text-xs text-purple-200">
-              How our zero-server client architecture keeps your documents, audio recordings, and keys safe.
-            </p>
-          </div>
-
-          {/* Desktop Table View */}
-          <div className="hidden md:block overflow-x-auto">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="border-b border-slate-200 bg-slate-50/80 text-slate-700 font-bold">
-                  <th className="p-4 sm:px-6">Dimension</th>
-                  <th className="p-4 sm:px-6 text-rose-700">Traditional Cloud Utilities</th>
-                  <th className="p-4 sm:px-6 text-emerald-800 bg-emerald-50/60">Web Utility Suite (Client-Side)</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 text-slate-600">
-                <tr className="hover:bg-slate-50/50">
-                  <td className="p-4 sm:px-6 font-bold text-slate-900">Data Transmission</td>
-                  <td className="p-4 sm:px-6 text-rose-600">Files uploaded over HTTPS to remote servers</td>
-                  <td className="p-4 sm:px-6 font-semibold text-emerald-800 bg-emerald-50/40">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      0 Bytes Uploaded. Stays in local browser memory.
-                    </span>
-                  </td>
-                </tr>
-                <tr className="hover:bg-slate-50/50">
-                  <td className="p-4 sm:px-6 font-bold text-slate-900">Data Retention & Logs</td>
-                  <td className="p-4 sm:px-6 text-rose-600">Stored on remote disk/S3 until cron cleanup</td>
-                  <td className="p-4 sm:px-6 font-semibold text-emerald-800 bg-emerald-50/40">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      Wiped automatically when you close the tab.
-                    </span>
-                  </td>
-                </tr>
-                <tr className="hover:bg-slate-50/50">
-                  <td className="p-4 sm:px-6 font-bold text-slate-900">Processing Latency</td>
-                  <td className="p-4 sm:px-6 text-slate-600">Limited by upload speed + server queue wait</td>
-                  <td className="p-4 sm:px-6 font-semibold text-emerald-800 bg-emerald-50/40">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      Sub-millisecond native CPU/GPU execution.
-                    </span>
-                  </td>
-                </tr>
-                <tr className="hover:bg-slate-50/50">
-                  <td className="p-4 sm:px-6 font-bold text-slate-900">Offline Functionality</td>
-                  <td className="p-4 sm:px-6 text-rose-600">Fails completely without active internet</td>
-                  <td className="p-4 sm:px-6 font-semibold text-emerald-800 bg-emerald-50/40">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      Export single-file HTML & run in air-gapped systems.
-                    </span>
-                  </td>
-                </tr>
-                <tr className="hover:bg-slate-50/50">
-                  <td className="p-4 sm:px-6 font-bold text-slate-900">Compliance & Privacy</td>
-                  <td className="p-4 sm:px-6 text-slate-600">Requires complex GDPR/HIPAA DPA agreements</td>
-                  <td className="p-4 sm:px-6 font-semibold text-emerald-800 bg-emerald-50/40">
-                    <span className="inline-flex items-center gap-1.5">
-                      <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                      Safe by design: No third-party data processor involved.
-                    </span>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          {/* Mobile Screen-Comfortable Card View */}
-          <div className="md:hidden p-4 space-y-4 divide-y divide-slate-100">
-            {[
-              {
-                dim: 'Data Transmission',
-                cloud: 'Files uploaded over network to remote servers',
-                local: '0 Bytes Uploaded. Stays 100% in local memory.'
-              },
-              {
-                dim: 'Data Retention & Logs',
-                cloud: 'Retained on remote storage disks & telemetry logs',
-                local: 'Instant ephemeral wipe on tab close.'
-              },
-              {
-                dim: 'Processing Speed',
-                cloud: 'Subject to internet speeds and server queue lag',
-                local: 'Sub-millisecond direct CPU/GPU hardware speed.'
-              },
-              {
-                dim: 'Offline Air-Gap Support',
-                cloud: 'Completely unusable without continuous internet',
-                local: 'Download single-file HTML & run fully offline.'
-              },
-              {
-                dim: 'Compliance / Privacy',
-                cloud: 'Requires third-party data agreements & audits',
-                local: 'Compliant by design — no remote entity receives data.'
-              }
-            ].map((item, idx) => (
-              <div key={item.dim} className={`space-y-2.5 ${idx !== 0 ? 'pt-4' : ''}`}>
-                <div className="text-xs font-bold text-slate-900">{item.dim}</div>
-                <div className="space-y-1.5 text-[11px]">
-                  <div className="p-2.5 rounded-xl bg-rose-50/60 border border-rose-100 text-rose-800">
-                    <span className="font-semibold text-rose-900 block text-[10px] uppercase">Cloud Alternative:</span>
-                    {item.cloud}
-                  </div>
-                  <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-900 font-medium">
-                    <span className="font-bold text-emerald-800 flex items-center gap-1 text-[10px] uppercase">
-                      <Check className="w-3 h-3 text-emerald-600" /> Web Utility Suite:
-                    </span>
-                    {item.local}
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
 
         {/* 3 Core Engineering Pillars (Multi-Pastel Bento Cards) */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
