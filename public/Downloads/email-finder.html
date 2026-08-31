@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Finder from URL</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen p-6 font-sans">
+  <div class="max-w-4xl mx-auto space-y-6">
+    <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
+      <h1 class="text-xl font-bold text-slate-900">Email Finder from URL (Excel / CSV)</h1>
+      <p class="text-xs text-slate-500 mt-1">Upload spreadsheet (.xlsx, .csv) or paste URLs to extract emails.</p>
+      <div class="mt-4 flex gap-3">
+        <input type="file" id="fileIn" accept=".xlsx, .xls, .csv" class="text-sm file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:bg-indigo-50 file:text-indigo-700 file:font-semibold hover:file:bg-indigo-100" />
+        <button id="findBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-bold">Find Emails</button>
+      </div>
+    </div>
+    <div id="results" class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm hidden">
+      <h2 class="text-sm font-bold text-slate-900 mb-3">Extracted Emails</h2>
+      <div id="tableContainer" class="overflow-x-auto"></div>
+    </div>
+  </div>
+</body>
+</html>

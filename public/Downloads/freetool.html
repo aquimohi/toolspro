@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Tools Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; overflow-x: hidden; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Loader Animation */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #4f46e5;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Toast Animation */
+        @keyframes slideInUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; } }
+        .toast { animation: slideInUp 0.3s ease-out forwards; }
+        .toast.hide { animation: fadeOut 0.3s ease-out forwards; }
+
+        .tool-card { transition: all 0.2s ease; border: 1px solid #e2e8f0; }
+        .tool-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05); border-color: #cbd5e1; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-slate-800">
+
+    <aside class="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col flex-shrink-0 z-10 shadow-sm relative">
+        <div class="h-16 flex items-center px-6 border-b border-slate-100">
+            <div class="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 flex items-center gap-2">
+                🚀 Tools Hub
+            </div>
+        </div>
+        
+        <div class="p-4 flex-1 overflow-y-auto">
+            <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-3 px-2">Categories</div>
+            <nav id="category-nav" class="space-y-1">
+                <!-- Navigation items dynamically injected -->
+            </nav>
+        </div>
+        <div class="p-4 border-t border-slate-100 text-xs text-slate-400 text-center">
+            Database: Google Sheets 🟢
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col h-full relative overflow-hidden bg-slate-50/50">
+        <!-- Mobile Header -->
+        <header class="md:hidden h-16 bg-white border-b border-slate-200 flex items-center px-4 shrink-0 shadow-sm z-20">
+            <div class="text-lg font-bold text-indigo-600 flex-1">🚀 Tools Hub</div>
+            <button id="mobile-menu-btn" class="p-2 rounded-md hover:bg-slate-100 text-slate-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </header>
+
+        <!-- Canvas Header -->
+        <div class="bg-white px-8 py-6 border-b border-slate-200 shrink-0 z-10 shadow-[0_4px_20px_-15px_rgba(0,0,0,0.1)] relative">
+            <h1 class="text-2xl font-bold text-slate-800 mb-1" id="current-category-title">All Tools</h1>
+            <p class="text-slate-500 text-sm">Access your favorite web tools directly from the cloud.</p>
+            
+            <!-- Global Search -->
+            <div class="mt-4 max-w-md relative group">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <input type="text" id="search-input" class="block w-full pl-10 pr-3 py-2 border border-slate-200 rounded-lg leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm transition-all" placeholder="Search tools (e.g., PDF, Editor)...">
+            </div>
+        </div>
+
+        <div class="flex-1 overflow-y-auto p-6 md:p-8 relative" id="canvas-scroll-area">
+            
+            <!-- Loading State -->
+            <div id="loader-state" class="flex flex-col items-center justify-center h-64 text-center">
+                <div class="loader mb-4"></div>
+                <h3 class="text-lg font-medium text-slate-700">Connecting to Google Sheets...</h3>
+                <p class="text-slate-500 text-sm mt-1">Fetching your tools database</p>
+            </div>
+
+            <!-- Tools Grid -->
+            <div id="tools-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pb-20 hidden">
+                <!-- Tool cards injected here -->
+            </div>
+            
+            <!-- Empty state -->
+            <div id="empty-state" class="hidden flex-col items-center justify-center h-64 text-center">
+                <svg class="w-16 h-16 text-slate-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <h3 class="text-lg font-medium text-slate-700">No tools found</h3>
+                <p class="text-slate-500 text-sm mt-1">Try searching for something else.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu-overlay" class="fixed inset-0 bg-slate-900/50 z-40 hidden md:hidden backdrop-blur-sm transition-opacity"></div>
+    <aside id="mobile-sidebar" class="fixed inset-y-0 left-0 w-64 bg-white z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden flex flex-col shadow-xl border-r border-slate-200">
+        <div class="h-16 flex items-center justify-between px-4 border-b border-slate-100">
+            <span class="font-bold text-lg text-indigo-600">Categories</span>
+            <button id="close-mobile-menu" class="p-2 rounded-md hover:bg-slate-100 text-slate-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+        <div class="p-4 overflow-y-auto flex-1">
+            <nav id="mobile-category-nav" class="space-y-1"></nav>
+        </div>
+    </aside>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-6 right-6 z-50 flex flex-col gap-2"></div>
+
+    <script>
+        // ==========================================
+        // PASTE YOUR GOOGLE APP SCRIPT WEB APP URL BELOW
+        // ==========================================
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwgzjEFxwZxg7Hy6I-elTcnNnNzw74UHMlXOmBvJ6jolDhaOMLvvD0HwLRcRdzVOk-4/exec'; // <--- UPDATED URL
+        
+        let toolsData = [];
+        let categories = ["All Tools"];
+        let currentCategory = "All Tools";
+        let searchQuery = "";
+
+        const toolsContainer = document.getElementById('tools-container');
+        const emptyState = document.getElementById('empty-state');
+        const loaderState = document.getElementById('loader-state');
+        const categoryNav = document.getElementById('category-nav');
+        const mobileCategoryNav = document.getElementById('mobile-category-nav');
+        const currentCategoryTitle = document.getElementById('current-category-title');
+        const searchInput = document.getElementById('search-input');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+        const mobileSidebar = document.getElementById('mobile-sidebar');
+
+        async function fetchToolsData() {
+            try {
+                if(GOOGLE_SCRIPT_URL.includes('AKfycbweXy6O-dQQgq_XfQdD07S-x2eK3p9tI3zX91Q9vU96sZlM9oW7c1qB87C2iGq7o3gG') || GOOGLE_SCRIPT_URL === 'YOUR_GOOGLE_SCRIPT_WEB_APP_URL_HERE') {
+                    throw new Error("Bhai, aapne apna asli Google Script Web App URL line 164 par nahi daala hai. Kripya apna URL paste karein.");
+                }
+
+                // Redirect handles CORS from Google Script automatically
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    redirect: "follow"
+                }); 
+                const result = await response.json();
+
+                if (result.status === 'success') {
+                    toolsData = result.data;
+                    
+                    // Extract Unique Categories dynamically
+                    const uniqueCats = [...new Set(toolsData.map(t => t.Category))].filter(Boolean).sort();
+                    categories = ["All Tools", ...uniqueCats];
+                    
+                    // Hide loader, show grid
+                    loaderState.classList.add('hidden');
+                    toolsContainer.classList.remove('hidden');
+
+                    renderNav();
+                    renderTools();
+                } else {
+                    throw new Error(result.message);
+                }
+            } catch (error) {
+                console.error("Error Fetching Data:", error);
+                loaderState.innerHTML = `
+                    <div class="text-red-500 mb-4"><svg class="w-12 h-12 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg></div>
+                    <h3 class="text-lg font-medium text-slate-700">Failed to load data</h3>
+                    <p class="text-red-500 text-sm mt-1">${error.message}</p>
+                    <p class="text-slate-500 text-xs mt-3 bg-slate-100 p-2 rounded">Tip: Ensure Google Script is deployed with <b>"Who has access: Anyone"</b></p>
+                `;
+            }
+        }
+
+        function renderNav() {
+            const createNavHTML = () => categories.map(cat => {
+                const isActive = cat === currentCategory;
+                const activeClasses = isActive 
+                    ? "bg-indigo-50 text-indigo-700 font-medium" 
+                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900";
+                
+                return `
+                    <button onclick="setCategory('${cat}')" 
+                            class="w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${activeClasses}">
+                        ${cat === 'All Tools' ? '🌟' : '📁'} ${cat}
+                    </button>
+                `;
+            }).join('');
+
+            categoryNav.innerHTML = createNavHTML();
+            mobileCategoryNav.innerHTML = createNavHTML();
+        }
+
+        function renderTools() {
+            // Filter logic
+            const filteredTools = toolsData.filter(tool => {
+                const matchCategory = currentCategory === "All Tools" || tool.Category === currentCategory;
+                const matchSearch = tool['Tool Name'].toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                    (tool.Category && tool.Category.toLowerCase().includes(searchQuery.toLowerCase()));
+                return matchCategory && matchSearch;
+            });
+
+            if (filteredTools.length === 0) {
+                toolsContainer.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                emptyState.classList.add('flex');
+            } else {
+                emptyState.classList.add('hidden');
+                emptyState.classList.remove('flex');
+                
+                toolsContainer.innerHTML = filteredTools.map(tool => `
+                    <div class="tool-card bg-white rounded-xl p-5 flex flex-col h-full group relative overflow-hidden">
+                        <div class="flex items-start gap-4 mb-4">
+                            <div class="w-12 h-12 rounded-lg bg-indigo-50 flex items-center justify-center text-2xl border border-indigo-100 group-hover:scale-110 transition-transform duration-300 shrink-0 shadow-sm">
+                                ${tool.Icon || '🔧'}
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="font-semibold text-slate-800 text-[15px] leading-tight truncate" title="${tool['Tool Name']}">
+                                    ${tool['Tool Name']}
+                                </h3>
+                                <div class="flex items-center gap-1.5 mt-1.5">
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-500 uppercase tracking-wide">
+                                        ${tool.Category || 'Tool'}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-auto pt-4 border-t border-slate-50 flex gap-2">
+                            <a href="${tool.URL}" target="_blank" rel="noopener noreferrer" 
+                               class="flex-1 inline-flex justify-center items-center px-3 py-2 text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 shadow-sm transition-colors">
+                                Open
+                                <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                            </a>
+                            <button onclick="copyToClipboard('${tool.URL}', this)" 
+                                    class="inline-flex justify-center items-center px-3 py-2 border border-slate-200 text-sm font-medium rounded-lg text-slate-700 bg-white hover:bg-slate-50 shadow-sm transition-colors group/btn">
+                                <span class="btn-text">Copy</span>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        window.setCategory = function(category) {
+            currentCategory = category;
+            currentCategoryTitle.innerText = category;
+            searchInput.value = '';
+            searchQuery = '';
+            renderNav();
+            renderTools();
+            closeMobileMenu();
+            document.getElementById('canvas-scroll-area').scrollTop = 0;
+        }
+
+        searchInput.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            renderTools();
+        });
+
+        window.copyToClipboard = function(url, buttonEl) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(url).then(() => showSuccess(buttonEl));
+            } else {
+                let textArea = document.createElement("textarea");
+                textArea.value = url;
+                textArea.style.position = "fixed";
+                textArea.style.left = "-999999px";
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showSuccess(buttonEl);
+                } catch (err) {
+                    showToast("Failed to copy URL", "error");
+                }
+                textArea.remove();
+            }
+        }
+
+        function showSuccess(buttonEl) {
+            showToast("URL Copied successfully!", "success");
+            const originalHTML = buttonEl.innerHTML;
+            buttonEl.classList.remove('bg-white', 'text-slate-700', 'border-slate-200');
+            buttonEl.classList.add('bg-green-50', 'text-green-700', 'border-green-200');
+            buttonEl.innerHTML = `<span class="btn-text">Copied!</span>`;
+            
+            setTimeout(() => {
+                buttonEl.classList.add('bg-white', 'text-slate-700', 'border-slate-200');
+                buttonEl.classList.remove('bg-green-50', 'text-green-700', 'border-green-200');
+                buttonEl.innerHTML = originalHTML;
+            }, 2000);
+        }
+
+        function showToast(message, type = "success") {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            
+            const bgColor = type === "success" ? "bg-slate-800" : "bg-red-600";
+            const icon = type === "success" 
+                ? `<svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`
+                : `<svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`;
+
+            toast.className = `toast flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg text-white text-sm font-medium ${bgColor} z-50`;
+            toast.innerHTML = `${icon} <span>${message}</span>`;
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.add('hide');
+                toast.addEventListener('animationend', () => toast.remove());
+            }, 3000);
+        }
+
+        // Mobile Menu Logic
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            mobileSidebar.classList.remove('-translate-x-full');
+            mobileMenuOverlay.classList.remove('hidden');
+        });
+
+        function closeMobileMenu() {
+            mobileSidebar.classList.add('-translate-x-full');
+            mobileMenuOverlay.classList.add('hidden');
+        }
+
+        document.getElementById('close-mobile-menu').addEventListener('click', closeMobileMenu);
+        mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+        // Fetch data on load
+        fetchToolsData();
+    </script>
+</body>
+</html>

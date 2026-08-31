@@ -1,0 +1,6 @@
+Invoice ID: INV-2026-7075
+Plan: Pro Creator & Dev (Annual)
+Amount: ₹9,048
+Date: Aug 26, 2026
+Payment: UPI (GPay)
+Status: Paid

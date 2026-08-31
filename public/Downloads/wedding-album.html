@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ananya & Rohan — Wedding Album</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Rozha+One&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ivory:#FBF1E4;
+    --ivory-soft:#F5E9D6;
+    --maroon:#6B1E2C;
+    --maroon-deep:#3A0F17;
+    --gold:#C99A3C;
+    --gold-light:#E8C77E;
+    --teal:#1F4B47;
+    --ink:#2A1418;
+    --shadow: 0 20px 60px rgba(58,15,23,0.25);
+    --ease: cubic-bezier(.22,.61,.36,1);
+  }
+
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--ivory);
+    color:var(--ink);
+    font-family:'Jost',sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; animation-iteration-count:1 !important; transition-duration:0.001ms !important;}
+  }
+
+  a{color:inherit; text-decoration:none;}
+  img{display:block; width:100%; height:100%; object-fit:cover;}
+  :focus-visible{outline:2px solid var(--gold); outline-offset:3px;}
+
+  .eyebrow{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:1.05rem;
+    letter-spacing:.14em;
+    color:var(--gold);
+    text-transform:uppercase;
+    margin-bottom:.6rem;
+    display:inline-block;
+  }
+  h1,h2,h3{font-family:'Rozha One',serif; font-weight:400; line-height:1.05;}
+
+  .wrap{max-width:1180px; margin:0 auto; padding:0 6vw;}
+
+  /* ---------- decorative gold thread (signature element) ---------- */
+  .kalava-thread{
+    position:absolute;
+    left:50%;
+    top:0;
+    width:2px;
+    transform:translateX(-50%);
+    z-index:1;
+    pointer-events:none;
+  }
+  .kalava-thread svg{overflow:visible;}
+  .kalava-thread path{
+    fill:none;
+    stroke:var(--gold);
+    stroke-width:2;
+    stroke-dasharray:1;
+    stroke-dashoffset:1;
+    pathLength:1;
+    transition:stroke-dashoffset 1.4s var(--ease);
+  }
+  .kalava-thread.in-view path{stroke-dashoffset:0;}
+  .kalava-thread .bead{
+    fill:var(--gold);
+    opacity:0;
+    transition:opacity .6s ease .8s, transform .6s var(--ease) .8s;
+    transform:scale(.2);
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+  .kalava-thread.in-view .bead{opacity:1; transform:scale(1);}
+
+  /* ================= NAV ================= */
+  header.nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:1.4rem 6vw;
+    background:linear-gradient(to bottom, rgba(58,15,23,.55), transparent);
+    transition:background .4s ease, padding .4s ease;
+  }
+  header.nav.scrolled{
+    background:var(--ivory);
+    box-shadow:0 2px 24px rgba(58,15,23,.08);
+    padding:.9rem 6vw;
+  }
+  .brand{
+    font-family:'Rozha One',serif;
+    font-size:1.25rem;
+    color:var(--ivory);
+    letter-spacing:.04em;
+    transition:color .4s ease;
+  }
+  header.nav.scrolled .brand{color:var(--maroon);}
+  .nav-links{display:flex; gap:2.4rem; font-size:.82rem; letter-spacing:.12em; text-transform:uppercase;}
+  .nav-links a{color:var(--ivory); position:relative; padding-bottom:4px; transition:color .4s ease;}
+  header.nav.scrolled .nav-links a{color:var(--maroon-deep);}
+  .nav-links a::after{
+    content:''; position:absolute; left:0; bottom:0; height:1px; width:0;
+    background:var(--gold); transition:width .35s var(--ease);
+  }
+  .nav-links a:hover::after{width:100%;}
+  @media (max-width:760px){ .nav-links{display:none;} }
+
+  /* ================= HERO : ALBUM SPREAD ================= */
+  .hero{
+    position:relative;
+    background:
+      repeating-linear-gradient(115deg, rgba(0,0,0,.05) 0 2px, transparent 2px 6px),
+      linear-gradient(160deg,#8a6a44,#6e4f30 45%,#5a3e26 100%);
+    padding:clamp(2.4rem,5vw,4.4rem) clamp(1rem,4vw,3rem) clamp(3rem,6vw,5rem);
+  }
+  .hero-inner{
+    position:relative;
+    opacity:0; transform:translateY(18px);
+    animation:rise 1s var(--ease) .2s forwards;
+  }
+  @keyframes rise{ to{opacity:1; transform:translateY(0);} }
+
+  .spread{
+    position:relative;
+    display:grid;
+    grid-template-columns: 1.15fr 1fr 1.15fr;
+    align-items:stretch;
+    min-height:min(78vh,640px);
+    box-shadow:0 30px 70px rgba(20,10,4,.5);
+  }
+  .spread-panel{position:relative; overflow:hidden; background:#1c1210;}
+  .spread-panel .ph{
+    width:100%; height:100%; min-height:260px;
+    background:linear-gradient(155deg,#6b1e2c,#3a0f17);
+    display:flex; align-items:center; justify-content:center;
+    transition:transform 1.2s var(--ease);
+  }
+  .spread-panel .ph::before{content:'📷 add photograph'; font-size:.72rem; letter-spacing:.1em; text-transform:uppercase; color:rgba(232,199,126,.55);}
+  .spread:hover .spread-panel .ph{transform:scale(1.04);}
+  .spread-panel--right{display:grid; grid-template-rows:1fr;}
+
+  .spread-card{
+    position:relative;
+    background:var(--ivory);
+    clip-path: polygon(14% 0, 100% 0, 86% 100%, 0% 100%);
+    margin:0 -3.6vw;
+    z-index:3;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center;
+    padding:3rem 4.4rem;
+  }
+  @media (max-width:760px){ .spread-card{padding:2.6rem 1.8rem;} }
+
+  .spread-card .flourish{position:absolute; width:74px; height:74px; opacity:.85;}
+  .spread-card .flourish--tl{top:16px; left:22px; transform:scaleX(1);}
+  .spread-card .flourish--br{bottom:16px; right:22px; transform:rotate(180deg);}
+  .spread-card .flourish path{fill:none; stroke:var(--gold); stroke-width:1.1;}
+  .spread-card .flourish circle{fill:var(--gold);}
+
+  .spread-card .eyebrow{color:var(--teal); margin-bottom:.3rem;}
+  .spread-card .banner{
+    font-size:.7rem; letter-spacing:.5em; color:var(--gold); margin-bottom:1rem;
+  }
+  .spread-card h1{
+    color:var(--maroon-deep);
+    font-size:clamp(2rem,4.2vw,3.1rem);
+    letter-spacing:.01em;
+  }
+  .spread-card h1 .amp{
+    color:var(--gold);
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-weight:500;
+    padding:0 .16em;
+  }
+  .spread-card p.tagline{
+    font-family:'Cormorant Garamond',serif;
+    font-style:italic;
+    font-size:1.05rem;
+    color:#7a5d55;
+    margin-top:.8rem;
+    max-width:26ch;
+  }
+
+  .inset-photo{
+    position:absolute;
+    left:50%; bottom:-46px;
+    transform:translateX(-50%) rotate(-2.5deg);
+    width:min(46%,220px);
+    background:var(--ivory);
+    padding:8px 8px 22px;
+    box-shadow:0 18px 40px rgba(20,10,4,.35);
+    z-index:4;
+    transition:transform .5s var(--ease);
+  }
+  .inset-photo:hover{transform:translateX(-50%) rotate(0deg) scale(1.03);}
+  .inset-photo .ph{
+    aspect-ratio:4/3;
+    background:linear-gradient(155deg,#e7d8b8,#cdb280);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .inset-photo .ph::before{content:'📷'; font-size:1.3rem; opacity:.4;}
+
+  .hero .meta{
+    margin-top:4.6rem;
+    display:flex; gap:2.2rem; justify-content:center; flex-wrap:wrap;
+    font-size:.78rem; letter-spacing:.16em; text-transform:uppercase; color:var(--gold-light);
+  }
+  .hero .meta span{opacity:.9;}
+
+  @media (max-width:820px){
+    .spread{grid-template-columns:1fr; min-height:auto;}
+    .spread-panel .ph{min-height:220px;}
+    .spread-card{clip-path:none; margin:0; padding:3.4rem 1.8rem 4.6rem;}
+    .inset-photo{display:none;}
+  }
+
+  .scroll-cue{
+    position:relative;
+    margin:3.2rem auto 0;
+    display:flex; flex-direction:column; align-items:center; gap:.5rem;
+    color:var(--gold-light); font-size:.7rem; letter-spacing:.2em; text-transform:uppercase;
+    width:fit-content;
+  }
+  .scroll-cue .line{width:1px; height:36px; background:linear-gradient(var(--gold), transparent); animation:pulse-line 2.2s ease-in-out infinite;}
+  @keyframes pulse-line{ 0%,100%{opacity:.3;} 50%{opacity:1;} }
+
+  /* ================= SECTION HEADERS ================= */
+  .section{position:relative; padding:7rem 0;}
+  .section-head{text-align:center; max-width:640px; margin:0 auto 4rem;}
+  .section-head h2{font-size:clamp(2.1rem,4vw,3rem); color:var(--maroon-deep);}
+  .section-head p{font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.2rem; color:#7a5d55; margin-top:.8rem;}
+
+  /* ================= TIMELINE (ceremony sequence) ================= */
+  .timeline{position:relative;}
+  .timeline-row{
+    display:grid; grid-template-columns:1fr 1fr;
+    gap:4rem; align-items:center;
+    position:relative; z-index:2;
+    margin-bottom:6rem;
+  }
+  .timeline-row:last-child{margin-bottom:0;}
+  .timeline-row:nth-child(even) .tl-copy{order:2;}
+  .timeline-row:nth-child(even) .tl-figure{order:1;}
+
+  .tl-figure{position:relative; border-radius:4px; overflow:hidden; box-shadow:var(--shadow);}
+  .tl-figure .ph{
+    aspect-ratio:4/5; background:linear-gradient(155deg,#eaddc4,#d8c39b);
+    display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;
+  }
+  .tl-figure .ph::before{
+    content:'📷 add photograph';
+    font-family:'Jost',sans-serif; font-size:.75rem; letter-spacing:.1em; text-transform:uppercase;
+    color:rgba(58,15,23,.35);
+  }
+  .tl-num{
+    position:absolute; top:1rem; left:1rem;
+    width:44px; height:44px; border-radius:50%;
+    background:var(--maroon-deep); color:var(--gold-light);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Rozha One',serif; font-size:1.1rem;
+    box-shadow:0 6px 18px rgba(58,15,23,.35);
+  }
+  .tl-copy .eyebrow{color:var(--teal);}
+  .tl-copy h3{font-size:2.1rem; color:var(--maroon-deep); margin-bottom:.9rem;}
+  .tl-copy p{font-size:1.02rem; line-height:1.75; color:#5b4642; max-width:44ch;}
+
+  @media (max-width:820px){
+    .timeline-row{grid-template-columns:1fr; gap:1.6rem;}
+    .timeline-row:nth-child(even) .tl-copy,
+    .timeline-row:nth-child(even) .tl-figure{order:initial;}
+  }
+
+  /* ================= GALLERY (hover animation) ================= */
+  .gallery-section{background:var(--ivory-soft);}
+  .gallery{
+    columns:3 280px;
+    column-gap:1.4rem;
+  }
+  .g-item{
+    break-inside:avoid;
+    margin-bottom:1.4rem;
+    position:relative;
+    border-radius:3px;
+    overflow:hidden;
+    cursor:pointer;
+    box-shadow:0 10px 30px rgba(58,15,23,.12);
+    transition:transform .5s var(--ease), box-shadow .5s ease;
+  }
+  .g-item:nth-child(4n+1){transform:rotate(-1.1deg);}
+  .g-item:nth-child(4n+2){transform:rotate(.7deg);}
+  .g-item:nth-child(4n+3){transform:rotate(-.5deg);}
+  .g-item:nth-child(4n){transform:rotate(.9deg);}
+  .g-item:hover{transform:rotate(0deg) translateY(-4px); box-shadow:0 22px 44px rgba(58,15,23,.22);}
+  .g-item .ph{
+    width:100%;
+    background:linear-gradient(155deg,#e7d8b8,#cdb280);
+    display:flex; align-items:center; justify-content:center;
+    transition:transform .7s var(--ease);
+  }
+  .g-item:nth-child(3n+1) .ph{aspect-ratio:3/4;}
+  .g-item:nth-child(3n+2) .ph{aspect-ratio:1/1;}
+  .g-item:nth-child(3n) .ph{aspect-ratio:4/5;}
+  .g-item .ph::before{
+    content:'📷';
+    font-size:1.6rem;
+    opacity:.35;
+  }
+  .g-item:hover .ph{transform:scale(1.08);}
+
+  .g-frame{
+    position:absolute; inset:10px;
+    border:1px solid var(--gold-light);
+    opacity:0;
+    transition:opacity .5s var(--ease), inset .5s var(--ease);
+    pointer-events:none;
+  }
+  .g-item:hover .g-frame{opacity:1; inset:16px;}
+
+  .g-overlay{
+    position:absolute; left:0; right:0; bottom:0;
+    padding:1.6rem 1.2rem 1.1rem;
+    background:linear-gradient(to top, rgba(58,15,23,.88), rgba(58,15,23,0));
+    transform:translateY(100%);
+    transition:transform .5s var(--ease);
+  }
+  .g-item:hover .g-overlay{transform:translateY(0);}
+  .g-overlay .cap-title{
+    font-family:'Rozha One',serif; color:var(--gold-light); font-size:1.05rem;
+  }
+  .g-overlay .cap-sub{
+    font-family:'Cormorant Garamond',serif; font-style:italic; color:var(--ivory-soft); font-size:.88rem; margin-top:.15rem;
+  }
+
+  /* ================= DETAILS (dark) ================= */
+  .details{
+    background:radial-gradient(ellipse at 20% 10%, rgba(201,154,60,.12), transparent 55%), var(--maroon-deep);
+    color:var(--ivory);
+  }
+  .details .section-head h2{color:var(--ivory);}
+  .details .section-head p{color:var(--gold-light);}
+  .cards{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:1.6rem;
+  }
+  @media (max-width:820px){ .cards{grid-template-columns:1fr;} }
+  .card{
+    border:1px solid rgba(232,199,126,.22);
+    border-radius:6px;
+    padding:2.2rem 1.8rem;
+    text-align:center;
+    transition:border-color .4s ease, transform .4s var(--ease);
+  }
+  .card:hover{border-color:var(--gold); transform:translateY(-6px);}
+  .card .glyph{
+    width:52px; height:52px; margin:0 auto 1.2rem;
+    border:1px solid var(--gold); border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Rozha One',serif; color:var(--gold-light); font-size:1.3rem;
+  }
+  .card h3{font-family:'Rozha One',serif; font-weight:400; font-size:1.35rem; color:var(--ivory); margin-bottom:.6rem;}
+  .card p{font-size:.92rem; line-height:1.7; color:#d9c3a8;}
+
+  /* ================= RSVP / FOOTER ================= */
+  .rsvp{
+    text-align:center;
+    padding:8rem 6vw;
+    position:relative;
+  }
+  .rsvp .eyebrow{color:var(--teal);}
+  .rsvp h2{font-size:clamp(2.2rem,5vw,3.4rem); color:var(--maroon-deep); margin-bottom:1rem;}
+  .rsvp p{font-family:'Cormorant Garamond',serif; font-style:italic; font-size:1.2rem; color:#7a5d55; max-width:46ch; margin:0 auto 2.6rem;}
+  .btn{
+    display:inline-flex; align-items:center; gap:.7rem;
+    padding:1rem 2.4rem;
+    background:var(--maroon-deep); color:var(--gold-light);
+    border-radius:999px;
+    font-size:.82rem; letter-spacing:.14em; text-transform:uppercase;
+    border:1px solid var(--maroon-deep);
+    transition:background .4s var(--ease), color .4s var(--ease), transform .3s var(--ease), box-shadow .4s var(--ease);
+  }
+  .btn:hover{
+    background:var(--gold); border-color:var(--gold); color:var(--maroon-deep);
+    transform:translateY(-3px);
+    box-shadow:0 14px 30px rgba(201,154,60,.35);
+  }
+
+  footer{
+    text-align:center;
+    padding:3rem 6vw 3.4rem;
+    background:var(--ivory-soft);
+    color:#8a6f66;
+    font-size:.8rem;
+    letter-spacing:.06em;
+  }
+  footer .brand-mini{font-family:'Rozha One',serif; color:var(--maroon); font-size:1.1rem; display:block; margin-bottom:.5rem;}
+
+  /* reveal-on-scroll utility */
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity .8s var(--ease), transform .8s var(--ease);}
+  .reveal.in-view{opacity:1; transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<header class="nav" id="siteNav">
+  <div class="brand">A &amp; R</div>
+  <nav class="nav-links">
+    <a href="#story">Our Story</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#details">Details</a>
+    <a href="#rsvp">RSVP</a>
+  </nav>
+</header>
+
+<!-- ================= HERO : ALBUM SPREAD ================= -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="spread">
+      <div class="spread-panel spread-panel--left"><div class="ph"></div></div>
+
+      <div class="spread-card">
+        <svg class="flourish flourish--tl" viewBox="0 0 80 80" aria-hidden="true">
+          <path d="M4,4 C20,4 22,20 38,20 M4,4 C4,20 20,22 20,38"/>
+          <path d="M10,10 C18,12 20,20 12,24"/>
+          <circle cx="6" cy="6" r="1.6"/>
+        </svg>
+
+        <span class="eyebrow">Our Wedding</span>
+        <div class="banner">✦ ✦ ✦</div>
+        <h1>Ananya <span class="amp">&amp;</span> Rohan</h1>
+        <p class="tagline">Two threads, tied into one — do saathi, ek dhaaga</p>
+
+        <div class="inset-photo"><div class="ph"></div></div>
+
+        <svg class="flourish flourish--br" viewBox="0 0 80 80" aria-hidden="true">
+          <path d="M4,4 C20,4 22,20 38,20 M4,4 C4,20 20,22 20,38"/>
+          <path d="M10,10 C18,12 20,20 12,24"/>
+          <circle cx="6" cy="6" r="1.6"/>
+        </svg>
+      </div>
+
+      <div class="spread-panel spread-panel--right">
+        <div class="ph"></div>
+      </div>
+    </div>
+
+    <div class="meta">
+      <span>14 · December · 2026</span>
+      <span>The Leela Palace, Udaipur</span>
+    </div>
+    <div class="scroll-cue"><span>Scroll</span><span class="line"></span></div>
+  </div>
+</section>
+
+<!-- ================= STORY / TIMELINE ================= -->
+<section class="section" id="story">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">The celebrations</span>
+      <h2>Five days, one story</h2>
+      <p>Every ritual, in the order we lived it</p>
+    </div>
+
+    <div class="timeline">
+      <div class="kalava-thread" id="thread">
+        <svg width="2" height="100%" preserveAspectRatio="none" viewBox="0 0 2 1000">
+          <path d="M1,0 L1,1000" pathLength="1"></path>
+        </svg>
+      </div>
+
+      <div class="timeline-row reveal">
+        <div class="tl-figure"><div class="tl-num">01</div><div class="ph"></div></div>
+        <div class="tl-copy">
+          <span class="eyebrow">Haldi</span>
+          <h3>Turmeric &amp; morning light</h3>
+          <p>Yellow paste, marigold petals, and every aunt with an opinion on how much to apply. The morning the color of the whole week is set.</p>
+        </div>
+      </div>
+
+      <div class="timeline-row reveal">
+        <div class="tl-figure"><div class="tl-num">02</div><div class="ph"></div></div>
+        <div class="tl-copy">
+          <span class="eyebrow">Mehndi</span>
+          <h3>Henna, hands, and hours of gossip</h3>
+          <p>Cones of henna, a courtyard of cousins, and a design that takes longer to dry than anyone has patience for.</p>
+        </div>
+      </div>
+
+      <div class="timeline-row reveal">
+        <div class="tl-figure"><div class="tl-num">03</div><div class="ph"></div></div>
+        <div class="tl-copy">
+          <span class="eyebrow">Sangeet</span>
+          <h3>The night both families forgot the choreography</h3>
+          <p>Dance rehearsals that fell apart on cue, a DJ who read the room perfectly, and a dance floor that never really emptied.</p>
+        </div>
+      </div>
+
+      <div class="timeline-row reveal">
+        <div class="tl-figure"><div class="tl-num">04</div><div class="ph"></div></div>
+        <div class="tl-copy">
+          <span class="eyebrow">Baraat &amp; Phere</span>
+          <h3>Seven circles, one promise each</h3>
+          <p>The groom's procession, the mandap, the fire as witness — and seven vows walked, one slow circle at a time.</p>
+        </div>
+      </div>
+
+      <div class="timeline-row reveal">
+        <div class="tl-figure"><div class="tl-num">05</div><div class="ph"></div></div>
+        <div class="tl-copy">
+          <span class="eyebrow">Reception</span>
+          <h3>The first toast as a married couple</h3>
+          <p>Fairy lights, a first dance neither of us rehearsed enough, and the quiet after everyone finally sat down to eat.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= GALLERY ================= -->
+<section class="section gallery-section" id="gallery">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">The album</span>
+      <h2>Moments, in no particular order</h2>
+      <p>Hover to see each one</p>
+    </div>
+
+    <div class="gallery reveal" id="galleryGrid">
+      <!-- gallery items generated by JS for brevity -->
+    </div>
+  </div>
+</section>
+
+<!-- ================= DETAILS ================= -->
+<section class="section details" id="details">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Join us</span>
+      <h2>Where &amp; when</h2>
+      <p>Everything you need for the week</p>
+    </div>
+    <div class="cards">
+      <div class="card reveal">
+        <div class="glyph">॥</div>
+        <h3>Ceremony</h3>
+        <p>14 December, 5:30 PM<br>Amrit Mandap, The Leela Palace<br>Udaipur, Rajasthan</p>
+      </div>
+      <div class="card reveal">
+        <div class="glyph">✦</div>
+        <h3>Stay</h3>
+        <p>Rooms held at The Leela Palace &amp; Taj Lake Palace.<br>Booking code: AR2026</p>
+      </div>
+      <div class="card reveal">
+        <div class="glyph">❋</div>
+        <h3>Dress code</h3>
+        <p>Festive Indian formal.<br>Marigold, gold &amp; jewel tones welcome.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= RSVP ================= -->
+<section class="rsvp" id="rsvp">
+  <span class="eyebrow reveal">We can't wait to celebrate with you</span>
+  <h2 class="reveal">Save your seat at the mandap</h2>
+  <p class="reveal">Kindly respond by the 1st of November so we can plan the seating, the sangeet dance-offs, and the food (obviously the food).</p>
+  <a href="#" class="btn reveal">RSVP Now →</a>
+</section>
+
+<footer>
+  <span class="brand-mini">Ananya &amp; Rohan</span>
+  14 December 2026 · Udaipur, Rajasthan
+</footer>
+
+<script>
+  // Nav background on scroll
+  const nav = document.getElementById('siteNav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  });
+
+  // Reveal-on-scroll + kalava thread draw
+  const revealTargets = document.querySelectorAll('.reveal, .kalava-thread');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('in-view');
+    });
+  }, { threshold: 0.15 });
+  revealTargets.forEach(el => io.observe(el));
+
+  // Build gallery (18 placeholder frames, easy to swap with real <img> tags)
+  const captions = [
+    ['Haldi morning', 'sunlight & turmeric'],
+    ['Mehndi hands', 'cousins & cones'],
+    ['Sangeet night', 'the dance floor'],
+    ['Baraat', 'dhol & dust'],
+    ['Phere', 'seven circles'],
+    ['Vidaai', 'the last goodbye'],
+    ['Reception', 'first dance'],
+    ['Family portrait', 'both sides, one frame'],
+    ['Details', 'kalire & bangles'],
+    ['The mandap', 'flowers & fire'],
+    ['Candid', 'the in-between'],
+    ['Toast', 'the speeches'],
+    ['Rings', 'the exchange'],
+    ['Night sky', 'fairy lights'],
+    ['Sisters', 'getting ready'],
+    ['Groom', 'the sherwani'],
+    ['Bride', 'the lehenga'],
+    ['Confetti', 'the exit'],
+  ];
+  const grid = document.getElementById('galleryGrid');
+  grid.innerHTML = captions.map(([t,s]) => `
+    <div class="g-item">
+      <div class="ph"></div>
+      <div class="g-frame"></div>
+      <div class="g-overlay">
+        <div class="cap-title">${t}</div>
+        <div class="cap-sub">${s}</div>
+      </div>
+    </div>
+  `).join('');
+</script>
+
+</body>
+</html>
